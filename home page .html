@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share India | India's Leading Fractional Ownership Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #1a1a1a;
+            --accent: #facc15;
+            --dev-gray: #4b5563;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Space Grotesk', sans-serif;
+            background: #0a0a0a;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        #main-hub {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .hero-gradient {
+            background: radial-gradient(circle at top right, #222, #000);
+        }
+
+        .share-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .share-card:not(.under-dev):hover {
+            transform: translateY(-12px) scale(1.02);
+            background: rgba(255, 255, 255, 0.07);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .share-card.under-dev {
+            cursor: default;
+            opacity: 0.7;
+            filter: grayscale(0.5);
+        }
+
+        .share-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .share-card:hover i {
+            transform: scale(1.1);
+        }
+
+        .iframe-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            background: white;
+        }
+
+        .back-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1001;
+            background: #000;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border: 2px solid var(--accent);
+            display: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            border-radius: 100px;
+            background: var(--accent);
+            color: black;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .badge-dev {
+            background: var(--dev-gray);
+            color: white;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .stagger-1 { animation-delay: 0.1s; opacity: 0; }
+        .stagger-2 { animation-delay: 0.2s; opacity: 0; }
+        .stagger-3 { animation-delay: 0.3s; opacity: 0; }
+        .stagger-4 { animation-delay: 0.4s; opacity: 0; }
+        .stagger-5 { animation-delay: 0.5s; opacity: 0; }
+        .stagger-6 { animation-delay: 0.6s; opacity: 0; }
+
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Back Button -->
+    <div id="backButton" class="back-btn" onclick="closeStore()">
+        <i class="fas fa-arrow-left mr-2"></i> Exit Store
+    </div>
+
+    <!-- Loader -->
+    <div id="loader" class="loader-overlay">
+        <div class="text-center">
+            <i class="fas fa-circle-notch fa-spin text-4xl text-yellow-400 mb-4"></i>
+            <p class="text-xl tracking-widest font-bold">LOADING STORE...</p>
+        </div>
+    </div>
+
+    <!-- Main Navigation Hub -->
+    <main id="main-hub" class="hero-gradient">
+        <!-- Header -->
+        <nav class="p-8 flex justify-between items-center max-w-7xl mx-auto w-full">
+            <div class="text-2xl font-black tracking-tighter">SHARE<span class="text-yellow-400">INDIA</span></div>
+            <div class="hidden md:flex gap-8 text-sm uppercase tracking-widest font-semibold opacity-70">
+                <a href="#" class="hover:text-yellow-400 transition">About</a>
+                <a href="#" class="hover:text-yellow-400 transition">Safety</a>
+                <a href="#" class="hover:text-yellow-400 transition">Contact</a>
+            </div>
+            <button class="bg-white text-black px-6 py-2 rounded-full font-bold text-sm hover:bg-yellow-400 transition">LOGIN</button>
+        </nav>
+
+        <!-- Hero Section -->
+        <div class="flex-grow flex flex-col items-center justify-center px-4 py-8 text-center">
+            <h1 class="text-4xl md:text-7xl font-black mb-4 tracking-tight animate-up">
+                INVEST IN <span class="text-yellow-400">EVERYTHING.</span>
+            </h1>
+            <p class="max-w-2xl text-md md:text-lg text-gray-400 mb-10 animate-up stagger-1">
+                India's premier gateway to fractional ownership. India's 1'st fractional asset management company . Explore live assets or browse our upcoming categories.
+            </p>
+
+            <!-- Cards Container -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl w-full px-4 mb-12">
+                              
+                    <!-- AgriShare (Updated with Labour/Equipment) -->
+                <div class="share-card p-8 rounded-3xl animate-up stagger-1" onclick="openStore('agrishare with labour.html')">
+                    <span class="badge">Agriculture</span>
+                    <i class="fas fa-seedling text-green-500"></i>
+                    <h2 class="text-2xl font-bold mb-3">AgriShare</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                       High-yield fertile farmlands, labour management, and equipment rentals. Modern agriculture meets digital ownership.
+                    </p>
+                    <div class="flex items-center text-yellow-400 font-bold group">
+                        Enter Store <i class="fas fa-chevron-right ml-2 transform group-hover:translate-x-2 transition"></i>
+                    </div>
+                </div>
+                         <!-- BrickShare -->
+                <div class="share-card p-8 rounded-3xl animate-up stagger-2" onclick="openStore('brick share.html')">
+                    <span class="badge">Real Estate</span>
+                    <i class="fas fa-city text-blue-500"></i>
+                    <h2 class="text-2xl font-bold mb-3">BrickShare</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        Premium commercial and residential properties. Own the skyline brick by brick.
+                    </p>
+                    <div class="flex items-center text-yellow-400 font-bold group">
+                        Enter Store <i class="fas fa-chevron-right ml-2 transform group-hover:translate-x-2 transition"></i>
+                    </div>
+                </div>
+
+                <!-- LuxShare -->
+                <div class="share-card p-8 rounded-3xl animate-up stagger-3" onclick="openStore('luxshare.html')">
+                    <span class="badge">Luxury Assets</span>
+                    <i class="fas fa-car-side text-red-500"></i>
+                    <h2 class="text-2xl font-bold mb-3">LuxShare</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        Exotic cars and high-end collectibles. Drive your investment in the fast lane.
+                    </p>
+                    <div class="flex items-center text-yellow-400 font-bold group">
+                        Enter Store <i class="fas fa-chevron-right ml-2 transform group-hover:translate-x-2 transition"></i>
+                    </div>
+                </div>
+
+                 <!-- Daily Rentals (Activated) -->
+                <div class="share-card p-8 rounded-3xl animate-up stagger-4" onclick="openStore('daily rentals.html')">
+                    <span class="badge">Premium Rentals</span>
+                    <i class="fas fa-key text-purple-500"></i>
+                    <h2 class="text-2xl font-bold mb-3">Daily Rentals</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                    rentals of exotic cars and home on you get away holdays .
+                    </p>
+                    <div class="flex items-center text-yellow-400 font-bold group">
+                        Enter Store <i class="fas fa-chevron-right ml-2 transform group-hover:translate-x-2 transition"></i>
+                    </div>
+                </div>
+
+               
+                <!-- logistics  Share (Activated) -->
+                <div class="share-card p-8 rounded-3xl animate-up stagger-6" onclick="openStore('truckshare.html')">
+                    <span class="badge">Global Logistics</span>
+                    <i class="fas fa-shipping-fast text-orange-500"></i>
+                    <h2 class="text-2xl font-bold mb-3">logistics  Share</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        Invest in shipping global trade and local trade . Logistics at your fingertips all at one go .
+                    </p>
+                    <div class="flex items-center text-yellow-400 font-bold group">
+                        Enter Store <i class="fas fa-chevron-right ml-2 transform group-hover:translate-x-2 transition"></i>
+                    </div>
+                </div>
+
+                             <!-- Cold Share -->
+                  <div class="share-card under-dev p-8 rounded-3xl animate-up stagger-5">
+                    <span class="badge badge-dev">Under Development</span>
+                    <i class="fas fa-snowflake text-cyan-400"></i>
+                    <h2 class="text-2xl font-bold mb-3">Cold Share</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        Logistics and cold storage infrastructure. Own the backbone of India's supply chain.
+                    </p>
+                    <div class="flex items-center text-gray-500 font-bold">
+                        Coming Soon <i class="fas fa-clock ml-2"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Updated Footer -->
+        <footer class="p-10 border-t border-white/5 bg-black/30">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-left">
+                    <div class="text-xl font-black tracking-tighter mb-2">SHARE<span class="text-yellow-400">INDIA</span></div>
+                    <p class="text-gray-500 text-xs tracking-widest uppercase">© 2025 SHARE INDIA FRACTIONAL LTD.</p>
+                </div>
+                
+                <div class="flex flex-col md:flex-row gap-8 text-center md:text-left">
+                    <div class="text-gray-400 text-sm">
+                        <h4 class="text-yellow-400 font-bold uppercase text-xs mb-2 tracking-widest">Headquarters</h4>
+                        <p>EAST POINT COLLGE OF ENGINEERING ,</p>
+                        <p> BENGALURU, KA 560016</p>
+                    </div>
+                    <div class="text-gray-400 text-sm">
+                        <h4 class="text-yellow-400 font-bold uppercase text-xs mb-2 tracking-widest">Customer Care</h4>
+                        <p><i class="fas fa-phone-alt mr-2 text-xs"></i> +91 94825 49114</p>
+                        <p><i class="fas fa-envelope mr-2 text-xs"></i> support@shareindia.fractional</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-500 hover:text-yellow-400 transition"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-yellow-400 transition"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-yellow-400 transition"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Viewer Container -->
+    <div id="storeView" class="iframe-container">
+        <iframe id="storeFrame" src="" frameborder="0" style="width: 100%; height: 100%;"></iframe>
+    </div>
+
+    <script>
+        function openStore(fileName) {
+            const loader = document.getElementById('loader');
+            const mainHub = document.getElementById('main-hub');
+            const storeView = document.getElementById('storeView');
+            const storeFrame = document.getElementById('storeFrame');
+            const backBtn = document.getElementById('backButton');
+
+            loader.style.opacity = '1';
+            
+            setTimeout(() => {
+                storeFrame.src = fileName;
+                mainHub.style.display = 'none';
+                storeView.style.display = 'block';
+                backBtn.style.display = 'block';
+                loader.style.opacity = '0';
+                document.body.style.overflow = 'hidden';
+            }, 800);
+        }
+
+        function closeStore() {
+            const mainHub = document.getElementById('main-hub');
+            const storeView = document.getElementById('storeView');
+            const backBtn = document.getElementById('backButton');
+            const storeFrame = document.getElementById('storeFrame');
+
+            storeFrame.src = "";
+            storeView.style.display = 'none';
+            backBtn.style.display = 'none';
+            mainHub.style.display = 'flex';
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>
