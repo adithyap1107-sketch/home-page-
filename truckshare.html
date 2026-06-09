@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LogisticsShare</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+  :root {
+    --bg-0: #080c10;
+    --bg-1: #0d1318;
+    --bg-2: #111820;
+    --bg-3: #1a2330;
+    --bg-card: #131c26;
+    --accent: #f97316;
+    --accent2: #fbbf24;
+    --accent3: #38bdf8;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+    --border: #1e2d3d;
+    --border-glow: rgba(249,115,22,0.3);
+    --green: #22c55e;
+    --red: #ef4444;
+    --rail: #1a2330;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg-0);
+    color:var(--text);
+    font-family:'Barlow',sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  /* ─── NOISE OVERLAY ─── */
+  body::before{
+    content:'';position:fixed;inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none;z-index:9999;opacity:.4;
+  }
+
+  /* ─── PAGES ─── */
+  .page{display:none;min-height:100vh;animation:fadeIn .4s ease;}
+  .page.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ─── NAV ─── */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:1000;
+    background:rgba(8,12,16,0.92);
+    border-bottom:1px solid var(--border);
+    backdrop-filter:blur(12px);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 2.5rem;height:64px;
+  }
+  .nav-logo{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:900;font-size:1.5rem;letter-spacing:.05em;
+    cursor:pointer;
+    display:flex;align-items:center;gap:.5rem;
+  }
+  .nav-logo span{color:var(--accent);}
+  .nav-links{display:flex;gap:.25rem;}
+  .nav-btn{
+    background:none;border:none;color:var(--text-dim);
+    font-family:'Barlow',sans-serif;font-size:.85rem;font-weight:500;
+    padding:.5rem 1rem;border-radius:4px;cursor:pointer;
+    transition:all .2s;letter-spacing:.03em;
+    position:relative;
+  }
+  .nav-btn:hover,.nav-btn.active-nav{color:var(--accent);}
+  .nav-btn.active-nav::after{
+    content:'';position:absolute;bottom:0;left:1rem;right:1rem;
+    height:2px;background:var(--accent);border-radius:2px;
+  }
+  .nav-badge{
+    background:var(--accent);color:#000;
+    font-size:.6rem;font-weight:700;
+    padding:1px 5px;border-radius:3px;
+    margin-left:.3rem;letter-spacing:.05em;
+  }
+
+  /* ─── HERO ─── */
+  .hero{
+    min-height:100vh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:6rem 2rem 4rem;
+    position:relative;overflow:hidden;
+  }
+  .hero-grid-bg{
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(249,115,22,0.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(249,115,22,0.04) 1px,transparent 1px);
+    background-size:60px 60px;
+    mask-image:radial-gradient(ellipse 80% 70% at 50% 50%,black 30%,transparent 100%);
+  }
+  .hero-glow{
+    position:absolute;top:20%;left:50%;transform:translateX(-50%);
+    width:600px;height:300px;
+    background:radial-gradient(ellipse,rgba(249,115,22,0.12) 0%,transparent 70%);
+    pointer-events:none;
+  }
+  .hero-label{
+    font-family:'Share Tech Mono',monospace;
+    font-size:.8rem;letter-spacing:.2em;color:var(--accent);
+    text-transform:uppercase;margin-bottom:1.5rem;
+    display:flex;align-items:center;gap:.75rem;
+  }
+  .hero-label::before,.hero-label::after{
+    content:'';height:1px;width:40px;background:var(--accent);opacity:.5;
+  }
+  .hero-title{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:900;font-size:clamp(3.5rem,9vw,7.5rem);
+    line-height:.95;text-align:center;letter-spacing:-.01em;
+    text-transform:uppercase;
+  }
+  .hero-title .line2{color:var(--accent);}
+  .hero-sub{
+    margin-top:1.5rem;max-width:550px;text-align:center;
+    color:var(--text-dim);font-size:1.05rem;font-weight:300;line-height:1.7;
+  }
+  .hero-stats{
+    display:flex;gap:3rem;margin-top:3rem;flex-wrap:wrap;justify-content:center;
+  }
+  .stat-item{text-align:center;}
+  .stat-num{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:2.2rem;font-weight:900;color:var(--accent2);
+  }
+  .stat-label{font-size:.75rem;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
+
+  /* ─── SERVICE CARDS ─── */
+  .services-section{
+    padding:1rem 2rem 5rem;
+    max-width:1200px;margin:0 auto;
+  }
+  .section-header{
+    text-align:center;margin-bottom:3rem;
+  }
+  .section-tag{
+    font-family:'Share Tech Mono',monospace;
+    font-size:.75rem;letter-spacing:.2em;color:var(--accent3);
+    text-transform:uppercase;margin-bottom:.75rem;
+  }
+  .section-title{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:clamp(1.8rem,4vw,3rem);font-weight:800;
+    text-transform:uppercase;letter-spacing:.02em;
+  }
+  .cards-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:1.5rem;
+  }
+  .service-card{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    cursor:pointer;
+    transition:all .3s cubic-bezier(.2,.8,.2,1);
+    position:relative;
+  }
+  .service-card::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(249,115,22,0.06),transparent 60%);
+    opacity:0;transition:opacity .3s;border-radius:12px;
+  }
+  .service-card:hover{
+    transform:translateY(-6px);
+    border-color:var(--accent);
+    box-shadow:0 20px 60px rgba(249,115,22,0.15);
+  }
+  .service-card:hover::before{opacity:1;}
+  .card-img-wrap{position:relative;height:220px;overflow:hidden;}
+  .card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+  .service-card:hover .card-img-wrap img{transform:scale(1.06);}
+  .card-img-overlay{
+    position:absolute;inset:0;
+    background:linear-gradient(to top,var(--bg-card) 0%,transparent 60%);
+  }
+  .card-badge{
+    position:absolute;top:12px;right:12px;
+    background:rgba(8,12,16,0.85);
+    border:1px solid var(--border);
+    border-radius:20px;padding:4px 12px;
+    font-size:.7rem;font-weight:600;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--accent2);
+    backdrop-filter:blur(8px);
+  }
+  .card-body{padding:1.5rem;}
+  .card-icon{
+    width:44px;height:44px;border-radius:10px;
+    background:rgba(249,115,22,0.12);border:1px solid rgba(249,115,22,0.25);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.2rem;color:var(--accent);margin-bottom:1rem;
+  }
+  .card-title{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:1.6rem;font-weight:800;letter-spacing:.02em;
+    text-transform:uppercase;margin-bottom:.5rem;
+  }
+  .card-desc{color:var(--text-dim);font-size:.9rem;line-height:1.6;margin-bottom:1.25rem;}
+  .card-features{list-style:none;display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.5rem;}
+  .card-features li{
+    display:flex;align-items:center;gap:.6rem;
+    font-size:.82rem;color:var(--text-dim);
+  }
+  .card-features li::before{
+    content:'';width:5px;height:5px;border-radius:50%;
+    background:var(--accent);flex-shrink:0;
+  }
+  .card-cta{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:.75rem 1.1rem;
+    background:rgba(249,115,22,0.08);
+    border:1px solid rgba(249,115,22,0.2);
+    border-radius:8px;
+    font-weight:600;font-size:.85rem;color:var(--accent);
+    transition:all .2s;
+  }
+  .service-card:hover .card-cta{
+    background:var(--accent);color:#000;
+  }
+
+  /* ─── PAGE INNER WRAPPER ─── */
+  .page-inner{padding-top:64px;}
+  .page-hero{
+    background:linear-gradient(135deg,var(--bg-1),var(--bg-2));
+    border-bottom:1px solid var(--border);
+    padding:3rem 2.5rem 2.5rem;
+    position:relative;overflow:hidden;
+  }
+  .page-hero::after{
+    content:'';position:absolute;right:0;top:0;bottom:0;width:40%;
+    background:linear-gradient(135deg,transparent,rgba(249,115,22,0.04));
+  }
+  .back-btn{
+    display:inline-flex;align-items:center;gap:.5rem;
+    color:var(--text-muted);font-size:.85rem;
+    background:none;border:none;cursor:pointer;
+    margin-bottom:1.5rem;transition:color .2s;
+    font-family:'Barlow',sans-serif;
+  }
+  .back-btn:hover{color:var(--accent);}
+  .page-title{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:clamp(2.5rem,6vw,5rem);font-weight:900;
+    text-transform:uppercase;letter-spacing:.02em;line-height:.95;
+  }
+  .page-title span{color:var(--accent);}
+  .page-subtitle{color:var(--text-dim);margin-top:.75rem;max-width:500px;font-size:.95rem;}
+
+  /* ─── CONTAINER SHARE ─── */
+  .cs-content{max-width:1200px;margin:0 auto;padding:3rem 2rem;}
+  .filter-bar{
+    display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2.5rem;
+    align-items:center;
+  }
+  .filter-input{
+    background:var(--bg-2);border:1px solid var(--border);
+    border-radius:8px;padding:.6rem 1rem;color:var(--text);
+    font-family:'Barlow',sans-serif;font-size:.9rem;
+    outline:none;transition:border-color .2s;flex:1;min-width:180px;
+  }
+  .filter-input:focus{border-color:var(--accent);}
+  .filter-select{
+    background:var(--bg-2);border:1px solid var(--border);
+    border-radius:8px;padding:.6rem 1rem;color:var(--text);
+    font-family:'Barlow',sans-serif;font-size:.9rem;
+    outline:none;cursor:pointer;
+  }
+  .btn-primary{
+    background:var(--accent);color:#000;
+    border:none;border-radius:8px;
+    padding:.65rem 1.5rem;
+    font-family:'Barlow',sans-serif;font-weight:700;font-size:.9rem;
+    cursor:pointer;transition:all .2s;letter-spacing:.03em;
+    display:inline-flex;align-items:center;gap:.5rem;
+  }
+  .btn-primary:hover{background:var(--accent2);transform:translateY(-1px);}
+  .btn-outline{
+    background:none;color:var(--accent);
+    border:1px solid var(--accent);border-radius:8px;
+    padding:.6rem 1.3rem;
+    font-family:'Barlow',sans-serif;font-weight:600;font-size:.85rem;
+    cursor:pointer;transition:all .2s;
+    display:inline-flex;align-items:center;gap:.5rem;
+  }
+  .btn-outline:hover{background:rgba(249,115,22,0.1);}
+
+  .container-listings{display:flex;flex-direction:column;gap:1.5rem;}
+  .container-card{
+    background:var(--bg-card);border:1px solid var(--border);
+    border-radius:12px;overflow:hidden;
+    display:grid;grid-template-columns:280px 1fr;
+    transition:border-color .2s,box-shadow .2s;
+  }
+  .container-card:hover{
+    border-color:rgba(249,115,22,0.4);
+    box-shadow:0 8px 40px rgba(249,115,22,0.08);
+  }
+  .cc-img{position:relative;overflow:hidden;}
+  .cc-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+  .container-card:hover .cc-img img{transform:scale(1.04);}
+  .cc-status{
+    position:absolute;top:10px;left:10px;
+    border-radius:4px;padding:3px 10px;
+    font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  }
+  .status-available{background:rgba(34,197,94,0.2);border:1px solid var(--green);color:var(--green);}
+  .status-filling{background:rgba(249,115,22,0.2);border:1px solid var(--accent);color:var(--accent);}
+  .cc-body{padding:1.5rem;display:flex;flex-direction:column;gap:1rem;}
+  .cc-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.5rem;}
+  .cc-name{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:1.5rem;font-weight:800;text-transform:uppercase;
+  }
+  .cc-id{
+    font-family:'Share Tech Mono',monospace;
+    font-size:.8rem;color:var(--accent3);background:rgba(56,189,248,0.08);
+    padding:3px 10px;border-radius:4px;border:1px solid rgba(56,189,248,0.2);
+  }
+  .cc-route{
+    display:flex;align-items:center;gap:.75rem;
+    font-size:.9rem;
+  }
+  .route-point{display:flex;flex-direction:column;}
+  .route-city{font-weight:600;font-size:1rem;}
+  .route-port{font-size:.75rem;color:var(--text-muted);}
+  .route-arrow{color:var(--accent);font-size:1.2rem;flex-shrink:0;}
+  .port-link{
+    color:var(--accent3);text-decoration:none;font-size:.75rem;
+    display:inline-flex;align-items:center;gap:.25rem;
+    margin-top:2px;transition:color .2s;
+  }
+  .port-link:hover{color:var(--accent2);}
+
+  .cc-meta{display:flex;gap:1.5rem;flex-wrap:wrap;}
+  .meta-item{display:flex;flex-direction:column;gap:2px;}
+  .meta-label{font-size:.7rem;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;}
+  .meta-value{font-weight:600;font-size:.9rem;}
+
+  .progress-wrap{margin-top:.25rem;}
+  .progress-label{display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-dim);margin-bottom:.4rem;}
+  .progress-bar{height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .6s ease;}
+
+  .cc-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;border-top:1px solid var(--border);padding-top:1rem;}
+  .price-tag{display:flex;align-items:baseline;gap:.4rem;}
+  .price-main{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--accent);}
+  .price-unit{font-size:.8rem;color:var(--text-muted);}
+
+  /* ─── VESSEL DETAIL MODAL / EXPAND ─── */
+  .vessel-info{
+    display:none;
+    background:var(--bg-1);border:1px solid var(--border);
+    border-radius:10px;padding:1.25rem;margin-top:.75rem;
+    grid-column:1/-1;
+  }
+  .vessel-info.open{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+  .vi-item .vi-label{font-size:.7rem;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;}
+  .vi-item .vi-val{font-weight:600;font-size:.9rem;}
+
+  /* ─── PAYMENT MODAL ─── */
+  .modal-overlay{
+    display:none;position:fixed;inset:0;
+    background:rgba(0,0,0,0.75);z-index:2000;
+    backdrop-filter:blur(6px);
+    align-items:center;justify-content:center;padding:1rem;
+  }
+  .modal-overlay.open{display:flex;animation:fadeIn .25s ease;}
+  .modal-box{
+    background:var(--bg-1);border:1px solid var(--border);
+    border-radius:16px;width:100%;max-width:480px;
+    box-shadow:0 40px 100px rgba(0,0,0,.8);
+    overflow:hidden;
+  }
+  .modal-header{
+    padding:1.5rem 1.75rem 1rem;
+    border-bottom:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .modal-title{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:1.5rem;font-weight:800;text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  .modal-close{
+    background:var(--bg-3);border:none;color:var(--text-muted);
+    width:32px;height:32px;border-radius:6px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .2s;font-size:1rem;
+  }
+  .modal-close:hover{background:var(--red);color:#fff;}
+  .modal-body{padding:1.75rem;}
+  .form-group{margin-bottom:1.25rem;}
+  .form-label{
+    display:block;font-size:.78rem;font-weight:600;
+    letter-spacing:.08em;text-transform:uppercase;
+    color:var(--text-dim);margin-bottom:.5rem;
+  }
+  .form-input{
+    width:100%;background:var(--bg-2);border:1px solid var(--border);
+    border-radius:8px;padding:.7rem 1rem;color:var(--text);
+    font-family:'Barlow',sans-serif;font-size:.9rem;
+    outline:none;transition:border-color .2s;
+  }
+  .form-input:focus{border-color:var(--accent);}
+  .card-field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .pay-summary{
+    background:var(--bg-2);border:1px solid var(--border);
+    border-radius:8px;padding:1rem 1.25rem;margin-bottom:1.5rem;
+  }
+  .pay-row{display:flex;justify-content:space-between;font-size:.88rem;margin-bottom:.5rem;color:var(--text-dim);}
+  .pay-row.total{border-top:1px solid var(--border);padding-top:.5rem;margin-top:.25rem;color:var(--text);font-weight:700;}
+  .pay-row.total .pay-val{color:var(--accent);font-size:1.1rem;}
+  .card-type-row{display:flex;gap:.75rem;margin-bottom:1.25rem;}
+  .card-type{
+    flex:1;padding:.6rem;text-align:center;
+    background:var(--bg-2);border:1px solid var(--border);
+    border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:600;
+    transition:all .2s;color:var(--text-dim);
+  }
+  .card-type.selected{border-color:var(--accent);color:var(--accent);background:rgba(249,115,22,0.08);}
+  .secured-badge{
+    text-align:center;margin-top:1rem;
+    font-size:.75rem;color:var(--text-muted);
+    display:flex;align-items:center;justify-content:center;gap:.4rem;
+  }
+
+  /* ─── TRUCK SHARE PAGE ─── */
+  .trucks-grid{
+    max-width:1200px;margin:0 auto;padding:3rem 2rem;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+    gap:1.5rem;
+  }
+  .truck-card{
+    background:var(--bg-card);border:1px solid var(--border);
+    border-radius:12px;overflow:hidden;
+    transition:all .3s;cursor:pointer;
+  }
+  .truck-card:hover{
+    border-color:rgba(249,115,22,0.4);
+    transform:translateY(-4px);
+    box-shadow:0 16px 50px rgba(249,115,22,0.1);
+  }
+  .tc-img{height:200px;position:relative;overflow:hidden;}
+  .tc-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+  .truck-card:hover .tc-img img{transform:scale(1.05);}
+  .tc-overlay{position:absolute;inset:0;background:linear-gradient(to top,var(--bg-card),transparent 60%);}
+  .tc-rating{
+    position:absolute;top:10px;right:10px;
+    background:rgba(8,12,16,0.85);border:1px solid var(--border);
+    border-radius:20px;padding:3px 10px;
+    font-size:.75rem;font-weight:700;color:var(--accent2);
+    backdrop-filter:blur(6px);
+  }
+  .tc-body{padding:1.25rem;}
+  .tc-driver{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;}
+  .driver-avatar{
+    width:44px;height:44px;border-radius:50%;
+    background:var(--bg-3);border:2px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.1rem;color:var(--accent);flex-shrink:0;overflow:hidden;
+  }
+  .driver-avatar img{width:100%;height:100%;object-fit:cover;}
+  .driver-name{font-weight:700;font-size:.95rem;margin-bottom:1px;}
+  .driver-phone{
+    font-family:'Share Tech Mono',monospace;
+    font-size:.78rem;color:var(--accent3);
+    display:flex;align-items:center;gap:.3rem;
+  }
+  .tc-truck-name{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:1.4rem;font-weight:800;text-transform:uppercase;
+    margin-bottom:.5rem;
+  }
+  .tc-specs{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;}
+  .tc-spec{
+    display:flex;align-items:center;gap:.35rem;
+    font-size:.78rem;color:var(--text-dim);
+  }
+  .tc-spec i{color:var(--accent);font-size:.8rem;}
+  .tc-location-inputs{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;}
+  .loc-input-wrap{position:relative;}
+  .loc-input-wrap i{
+    position:absolute;left:.75rem;top:50%;transform:translateY(-50%);
+    color:var(--accent);font-size:.8rem;
+  }
+  .loc-input{
+    width:100%;background:var(--bg-2);border:1px solid var(--border);
+    border-radius:8px;padding:.6rem .75rem .6rem 2rem;
+    color:var(--text);font-family:'Barlow',sans-serif;font-size:.82rem;
+    outline:none;transition:border-color .2s;
+  }
+  .loc-input:focus{border-color:var(--accent);}
+  .tc-footer{
+    display:flex;align-items:center;justify-content:space-between;
+    border-top:1px solid var(--border);padding-top:1rem;
+  }
+  .tc-price{
+    display:flex;flex-direction:column;
+  }
+  .tc-price-main{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:1.6rem;font-weight:900;color:var(--accent);
+    line-height:1;
+  }
+  .tc-price-unit{font-size:.7rem;color:var(--text-muted);}
+
+  /* ─── TRUCK RENT PAGE ─── */
+  .rent-content{max-width:1000px;margin:0 auto;padding:3rem 2rem;}
+  .rent-form{
+    background:var(--bg-card);border:1px solid var(--border);
+    border-radius:16px;overflow:hidden;
+  }
+  .rent-form-header{
+    background:linear-gradient(135deg,var(--bg-2),var(--bg-3));
+    padding:1.75rem 2rem;border-bottom:1px solid var(--border);
+  }
+  .rent-form-title{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:1.75rem;font-weight:800;text-transform:uppercase;
+    margin-bottom:.35rem;
+  }
+  .rent-form-sub{color:var(--text-dim);font-size:.88rem;}
+  .rent-form-body{padding:2rem;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+  .form-grid.full{grid-template-columns:1fr;}
+  .form-textarea{
+    width:100%;background:var(--bg-2);border:1px solid var(--border);
+    border-radius:8px;padding:.75rem 1rem;color:var(--text);
+    font-family:'Barlow',sans-serif;font-size:.9rem;
+    outline:none;transition:border-color .2s;resize:vertical;min-height:100px;
+  }
+  .form-textarea:focus{border-color:var(--accent);}
+
+  .earning-preview{
+    background:var(--bg-1);border:1px solid rgba(34,197,94,0.2);
+    border-radius:12px;padding:1.5rem;margin-top:1.5rem;
+  }
+  .ep-header{
+    display:flex;align-items:center;gap:.5rem;
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:1.2rem;font-weight:700;text-transform:uppercase;
+    color:var(--green);margin-bottom:1rem;
+  }
+  .ep-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+  .ep-item{text-align:center;}
+  .ep-val{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:1.8rem;font-weight:900;
+  }
+  .ep-val.green{color:var(--green);}
+  .ep-lbl{font-size:.7rem;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
+
+  /* Active listings table */
+  .listings-section{margin-top:3rem;}
+  .ls-title{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:1.5rem;font-weight:800;text-transform:uppercase;
+    margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;
+  }
+  .ls-title::after{content:'';flex:1;height:1px;background:var(--border);}
+  .listings-table{width:100%;border-collapse:collapse;}
+  .listings-table th{
+    text-align:left;padding:.7rem 1rem;
+    font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--text-muted);border-bottom:1px solid var(--border);
+  }
+  .listings-table td{
+    padding:.85rem 1rem;font-size:.88rem;
+    border-bottom:1px solid rgba(30,45,61,0.5);
+  }
+  .listings-table tr:last-child td{border-bottom:none;}
+  .td-truck{font-weight:600;}
+  .td-earnings{color:var(--green);font-weight:700;}
+  .td-status span{
+    padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;letter-spacing:.06em;
+  }
+  .td-status .rented{background:rgba(34,197,94,0.12);border:1px solid var(--green);color:var(--green);}
+  .td-status .idle{background:rgba(100,116,139,0.12);border:1px solid var(--text-muted);color:var(--text-muted);}
+
+  /* ─── TOAST ─── */
+  .toast{
+    position:fixed;bottom:2rem;right:2rem;z-index:3000;
+    background:var(--bg-1);border:1px solid var(--border);
+    border-radius:10px;padding:1rem 1.5rem;
+    display:none;align-items:center;gap:.75rem;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    font-size:.88rem;min-width:280px;
+    animation:slideUp .3s ease;
+  }
+  .toast.show{display:flex;}
+  @keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+  .toast-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .toast-icon.success{background:rgba(34,197,94,0.15);color:var(--green);}
+
+  /* ─── MISC ─── */
+  .divider{height:1px;background:var(--border);margin:1.5rem 0;}
+  .chip{
+    display:inline-flex;align-items:center;gap:.35rem;
+    padding:3px 10px;border-radius:20px;
+    font-size:.72rem;font-weight:600;letter-spacing:.06em;
+    background:var(--bg-3);border:1px solid var(--border);color:var(--text-dim);
+  }
+  .scrollbar-thin::-webkit-scrollbar{width:5px;}
+  .scrollbar-thin::-webkit-scrollbar-track{background:var(--bg-1);}
+  .scrollbar-thin::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+  footer{
+    background:var(--bg-1);border-top:1px solid var(--border);
+    padding:2rem;text-align:center;
+    font-size:.8rem;color:var(--text-muted);margin-top:2rem;
+  }
+  footer span{color:var(--accent);}
+
+  /* ─── RENTAL CATALOG ─── */
+  .rental-catalog{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
+  .catalog-header{
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:1rem;margin-bottom:2rem;
+  }
+  .catalog-title{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:2rem;font-weight:900;text-transform:uppercase;letter-spacing:.03em;
+    display:flex;align-items:center;gap:.75rem;
+  }
+  .catalog-title::after{content:'';flex:1;height:1px;background:var(--border);}
+  .catalog-filters{display:flex;gap:.5rem;flex-wrap:wrap;}
+  .filter-chip{
+    background:var(--bg-2);border:1px solid var(--border);
+    border-radius:20px;padding:.35rem 1rem;
+    font-size:.78rem;font-weight:600;color:var(--text-dim);
+    cursor:pointer;transition:all .2s;letter-spacing:.04em;
+  }
+  .filter-chip:hover,.filter-chip.active{
+    background:rgba(249,115,22,0.12);border-color:var(--accent);color:var(--accent);
+  }
+  .rental-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:1.5rem;
+  }
+  .rental-card{
+    background:var(--bg-card);border:1px solid var(--border);
+    border-radius:14px;overflow:hidden;
+    transition:all .35s cubic-bezier(.2,.8,.2,1);
+    position:relative;
+  }
+  .rental-card:hover{
+    border-color:rgba(249,115,22,0.45);
+    transform:translateY(-5px);
+    box-shadow:0 20px 60px rgba(249,115,22,0.12);
+  }
+  .rc-img{height:185px;position:relative;overflow:hidden;}
+  .rc-img img{width:100%;height:100%;object-fit:cover;transition:transform .45s;}
+  .rental-card:hover .rc-img img{transform:scale(1.07);}
+  .rc-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,var(--bg-card) 0%,transparent 55%);}
+  .rc-type-badge{
+    position:absolute;top:10px;left:10px;
+    border-radius:5px;padding:3px 10px;
+    font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    backdrop-filter:blur(8px);
+  }
+  .badge-heavy{background:rgba(239,68,68,0.2);border:1px solid var(--red);color:var(--red);}
+  .badge-medium{background:rgba(249,115,22,0.2);border:1px solid var(--accent);color:var(--accent);}
+  .badge-light{background:rgba(34,197,94,0.2);border:1px solid var(--green);color:var(--green);}
+  .badge-container{background:rgba(56,189,248,0.2);border:1px solid var(--accent3);color:var(--accent3);}
+  .badge-reefer{background:rgba(168,85,247,0.2);border:1px solid #a855f7;color:#a855f7;}
+  .rc-avail{
+    position:absolute;top:10px;right:10px;
+    background:rgba(8,12,16,0.85);border-radius:20px;
+    padding:3px 10px;font-size:.7rem;font-weight:600;
+    backdrop-filter:blur(6px);
+  }
+  .avail-yes{border:1px solid var(--green);color:var(--green);}
+  .avail-no{border:1px solid var(--text-muted);color:var(--text-muted);}
+  .rc-body{padding:1.25rem;}
+  .rc-truck-name{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:1.35rem;font-weight:800;text-transform:uppercase;
+    margin-bottom:.2rem;
+  }
+  .rc-reg{
+    font-family:'Share Tech Mono',monospace;
+    font-size:.75rem;color:var(--accent3);margin-bottom:.85rem;
+  }
+  .rc-specs-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.9rem;}
+  .rc-spec-pill{
+    display:flex;align-items:center;gap:.3rem;
+    background:var(--bg-3);border:1px solid var(--border);
+    border-radius:20px;padding:3px 10px;
+    font-size:.72rem;color:var(--text-dim);
+  }
+  .rc-spec-pill i{color:var(--accent);font-size:.7rem;}
+  .rc-owner{
+    display:flex;align-items:center;gap:.65rem;
+    background:var(--bg-2);border:1px solid var(--border);
+    border-radius:8px;padding:.6rem .8rem;margin-bottom:.9rem;
+  }
+  .rc-owner-av{
+    width:34px;height:34px;border-radius:50%;
+    border:2px solid var(--border);overflow:hidden;flex-shrink:0;
+  }
+  .rc-owner-av img{width:100%;height:100%;object-fit:cover;}
+  .rc-owner-name{font-size:.83rem;font-weight:600;line-height:1.2;}
+  .rc-owner-loc{font-size:.72rem;color:var(--text-muted);display:flex;align-items:center;gap:.25rem;}
+  .rc-features{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.9rem;}
+  .rc-feat{
+    display:flex;align-items:center;gap:.3rem;
+    font-size:.72rem;color:var(--text-dim);
+  }
+  .rc-feat i{color:var(--accent2);font-size:.65rem;}
+  .rc-footer{
+    display:flex;align-items:center;justify-content:space-between;
+    border-top:1px solid var(--border);padding-top:.9rem;
+  }
+  .rc-price-wrap{display:flex;flex-direction:column;}
+  .rc-price{
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:1.7rem;font-weight:900;color:var(--accent);line-height:1;
+  }
+  .rc-price-unit{font-size:.68rem;color:var(--text-muted);}
+  .rc-actions{display:flex;gap:.5rem;}
+  .rc-info-btn{
+    background:var(--bg-3);border:1px solid var(--border);
+    border-radius:7px;width:34px;height:34px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;color:var(--text-dim);transition:all .2s;font-size:.85rem;
+  }
+  .rc-info-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .rc-expanded{
+    display:none;padding:0 1.25rem 1.25rem;
+  }
+  .rc-expanded.open{display:block;animation:fadeIn .25s ease;}
+  .rc-expand-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:.6rem;
+    background:var(--bg-1);border:1px solid var(--border);
+    border-radius:8px;padding:1rem;
+  }
+  .re-item .re-lbl{font-size:.68rem;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;}
+  .re-item .re-val{font-size:.85rem;font-weight:600;}
+  .catalog-empty{
+    grid-column:1/-1;text-align:center;padding:3rem;
+    color:var(--text-muted);font-size:.9rem;
+  }
+  .catalog-count{
+    font-family:'Share Tech Mono',monospace;
+    font-size:.8rem;color:var(--text-muted);
+    margin-bottom:1.5rem;
+  }
+  .catalog-count span{color:var(--accent);}
+
+  @media(max-width:768px){
+    .container-card{grid-template-columns:1fr;}
+    .cc-img{height:200px;}
+    .vessel-info.open{grid-template-columns:1fr 1fr;}
+    .form-grid{grid-template-columns:1fr;}
+    .ep-grid{grid-template-columns:1fr;}
+    nav{padding:0 1.25rem;}
+    .nav-links{display:none;}
+    .hero-title{font-size:clamp(2.5rem,12vw,4rem);}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <i class="fa-solid fa-ship" style="color:var(--accent);"></i>
+    Logistics<span>Share</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn active-nav" id="nav-home" onclick="showPage('home')">Home</button>
+    <button class="nav-btn" id="nav-container" onclick="showPage('container')">
+      Container Share <span class="nav-badge">NEW</span>
+    </button>
+    <button class="nav-btn" id="nav-truck" onclick="showPage('truck')">Truck Share</button>
+    <button class="nav-btn" id="nav-rent" onclick="showPage('rent')">List Your Truck</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════
+     HOME PAGE
+═══════════════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-label">Fractional Logistics Platform</div>
+    <h1 class="hero-title">
+      <div>Move Your</div>
+      <div class="line2">Goods Smarter</div>
+    </h1>
+    <p class="hero-sub">Share containers, book truck fractions, and maximize capacity. Pay only for the space you actually need.</p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">5000+</div>
+        <div class="stat-label">Active Containers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">1000+</div>
+        <div class="stat-label">Partner Trucks</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">50</div>
+        <div class="stat-label">Global Ports</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">99.2%</div>
+        <div class="stat-label">Delivery Rate</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="services-section">
+    <div class="section-header">
+      <div class="section-tag"> Our Services</div>
+      <h2 class="section-title">Choose Your Logistics Solution </h2>
+    </div>
+    <div class="cards-grid">
+      <!-- Card 1 -->
+      <div class="service-card" onclick="showPage('container')">
+        <div class="card-img-wrap">
+          <img src="https://imgs.search.brave.com/Ggl32y4Csmysa4fZuFGLXHVLzbonton7PmhF39HZEu0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzEzLzIwLzgzLzA4/LzM2MF9GXzEzMjA4/MzA4MzNfZGdBV0p0/d1Z6TnQydW5xbERj/cVJnekppb3VXQ2Vs/ZWcuanBn" alt="Shipping Container"/>
+          <div class="card-img-overlay"></div>
+          <div class="card-badge">FRACTIONAL</div>
+        </div>
+        <div class="card-body">
+          <div class="card-icon"><i class="fa-solid fa-box-open"></i></div>
+          <div class="card-title">Container Share</div>
+          <div class="card-desc">Own a fraction of a shipping container for international exports. Only pay for the space your cargo occupies.</div>
+          <ul class="card-features">
+            <li>Sea containers on major routes</li>
+            <li>Real-time tracking & vessel info</li>
+            <li>Insured cargo, transparent pricing</li>
+            <li>Port-to-port delivery guaranteed</li>
+          </ul>
+          <div class="card-cta">Explore Containers <i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="service-card" onclick="showPage('truck')">
+        <div class="card-img-wrap">
+          <img src="https://imgs.search.brave.com/iSIxURL6Pyhw5iIaojpPnlnNufsUARJ4qzAlTfyEQic/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMjE4/MTk5ODI4NC9waG90/by9hZXJpYWwtdmll/dy1vZi1zaGlwcGlu/Zy1jb250YWluZXJz/LWluLXNoaXB5YXJk/LmpwZz9zPTYxMng2/MTImdz0wJms9MjAm/Yz1LSWR6eGQ5U0dQ/R0VRVVFfVU1WNGNv/WnctYTVvVExTNlZo/Ynp0dWp3SWNJPQ" alt="Truck"/>
+          <div class="card-img-overlay"></div>
+          <div class="card-badge">BOOK NOW</div>
+        </div>
+        <div class="card-body">
+          <div class="card-icon"><i class="fa-solid fa-truck"></i></div>
+          <div class="card-title">Truck Share</div>
+          <div class="card-desc">Book a fraction of a truck for domestic transport. Share rides with other shippers and split costs fairly.</div>
+          <ul class="card-features">
+            <li>Nationwide routes, verified drivers</li>
+            <li>GPS tracked, full transparency</li>
+            <li>Door-to-door pickup & delivery</li>
+            <li>Pay for the space you use, flexible pricing</li>
+          </ul>
+          <div class="card-cta">Book a Truck <i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+      </div>
+      <!-- Card 3 -->
+      <div class="service-card" onclick="showPage('rent')">
+        <div class="card-img-wrap">
+          <img src="https://imgs.search.brave.com/_4CxBILvJv7azVoudlfPEy2m-BiTOixor2vlChW_rRM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTQ0/NTA3NDMzMi9waG90/by9icmlnaHQtY29s/b3JmdWwtYmlnLXJp/Z3Mtc2VtaS10cnVj/a3Mtd2l0aC1zZW1p/LXRyYWlsZXJzLXN0/YW5kaW5nLWluLXRo/ZS1yb3ctb24tdHJ1/Y2stc3RvcC5qcGc_/Yj0xJnM9NjEyeDYx/MiZ3PTAmaz0yMCZj/PXFXQWoyOV9pVDRy/YUg4OGg2QXBVRmF4/cThpSkNUM1lIV3lh/dXA4LW9KWlE9" alt="Fleet"/>
+          <div class="card-img-overlay"></div>
+          <div class="card-badge">EARN DAILY</div>
+        </div>
+        <div class="card-body">
+          <div class="card-icon"><i class="fa-solid fa-coins"></i></div>
+          <div class="card-title">List Your Truck</div>
+          <div class="card-desc">Own a truck? List it on LogisticsShare and earn a daily income while helping shippers across the country.</div>
+          <ul class="card-features">
+            <li>Daily payments, no lock-in contracts</li>
+            <li>Full insurance coverage provided</li>
+            <li>Manage availability via dashboard</li>
+            <li>Priority booking for top-rated owners</li>
+          </ul>
+          <div class="card-cta">Start Earning <i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:2.5rem;margin-bottom:1rem;">
+      <div style="display:flex;align-items:center;gap:.5rem;">
+        <i class="fa-solid fa-envelope" style="color:var(--accent);"></i>
+        <a href="mailto:support@logisticsshare.in" style="color:var(--text-dim);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">support@logisticsshare.in</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:.5rem;">
+        <i class="fa-solid fa-headset" style="color:var(--accent);"></i>
+        <a href="tel:+91 94825 49114" style="color:var(--text-dim);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">+91 94825 49114</a>
+        <span style="color:var(--text-muted);font-size:.72rem;">(Mon–Sat, 8AM–8PM)</span>
+      </div>
+    </div>
+    <div>© 2026 Logistics<span>Share</span> · Built for smarter logistics </div>
+  </footer>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     CONTAINER SHARE PAGE
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="page-container">
+  <div class="page-inner">
+    <div class="page-hero">
+      <button class="back-btn" onclick="showPage('home')"><i class="fa-solid fa-chevron-left"></i> Back to Home</button>
+      <div class="page-title">Container <span>Share</span></div>
+      <p class="page-subtitle">Book your fraction of a shipping container. Pay only for the space you need — sea logistics simplified.</p>
+    </div>
+    <div class="cs-content">
+      <div class="filter-bar">
+        <input class="filter-input" placeholder="🔍  Search route, port, vessel..." id="cs-search"/>
+        <select class="filter-select">
+          <option>All Routes</option>
+          <option>Asia–Europe</option>
+          <option>Asia–Americas</option>
+          <option>Middle East–Europe</option>
+        </select>
+        <select class="filter-select">
+          <option>Any Space</option>
+          <option>Under 5 CBM</option>
+          <option>5–15 CBM</option>
+          <option>15+ CBM</option>
+        </select>
+        <button class="btn-primary"><i class="fa-solid fa-sliders"></i> Filter</button>
+      </div>
+
+      <div class="container-listings" id="container-listings">
+        <!-- Dynamically generated -->
+      </div>
+    </div>
+    <footer>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:2.5rem;margin-bottom:1rem;">
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          <i class="fa-solid fa-envelope" style="color:var(--accent);"></i>
+          <a href="mailto:support@logisticsshare.in" style="color:var(--text-dim);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">support@logisticsshare.in</a>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          <i class="fa-solid fa-headset" style="color:var(--accent);"></i>
+          <a href="tel:+91 94825 49114" style="color:var(--text-dim);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">+91 94825 49114</a>
+          <span style="color:var(--text-muted);font-size:.72rem;">(Mon–Sat, 8AM–8PM)</span>
+        </div>
+      </div>
+      <div>© 2026 Logistics<span style="color:var(--accent)">Share</span> · Container Share interface </div>
+    </footer>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TRUCK SHARE PAGE
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="page-truck">
+  <div class="page-inner">
+    <div class="page-hero">
+      <button class="back-btn" onclick="showPage('home')"><i class="fa-solid fa-chevron-left"></i> Back to Home</button>
+      <div class="page-title">Truck <span>Share</span></div>
+      <p class="page-subtitle">Book a fraction of a truck for domestic delivery. Verified drivers, GPS tracked, pay according to the space you use .</p>
+    </div>
+    <div class="trucks-grid" id="trucks-grid">
+      <!-- Dynamically generated -->
+    </div>
+    <footer>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:2.5rem;margin-bottom:1rem;">
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          <i class="fa-solid fa-envelope" style="color:var(--accent);"></i>
+          <a href="mailto:support@logisticsshare.in" style="color:var(--text-dim);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">support@logisticsshare.in</a>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          <i class="fa-solid fa-headset" style="color:var(--accent);"></i>
+          <a href="tel:+91 94825 49114" style="color:var(--text-dim);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">+91 94825 49114</a>
+          <span style="color:var(--text-muted);font-size:.72rem;">(Mon–Sat, 8AM–8PM)</span>
+        </div>
+      </div>
+      <div>© 2026 Logistics<span style="color:var(--accent)">Share</span> · Truck Share interface </div>
+    </footer>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TRUCK RENTAL PAGE
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="page-rent">
+  <div class="page-inner">
+    <div class="page-hero">
+      <button class="back-btn" onclick="showPage('home')"><i class="fa-solid fa-chevron-left"></i> Back to Home</button>
+      <div class="page-title">List Your <span>Truck</span></div>
+      <p class="page-subtitle">Put your truck to work. Earn daily payments by listing on Logistics Share — we handle the shippers, you drive the profits.</p>
+    </div>
+    <div class="rent-content">
+      <div class="rent-form">
+        <div class="rent-form-header">
+          <div class="rent-form-title"><i class="fa-solid fa-truck-ramp-box" style="color:var(--accent);margin-right:.5rem;"></i>Register Your Vehicle</div>
+          <div class="rent-form-sub">Fill in your truck details and start receiving bookings immediately.</div>
+        </div>
+        <div class="rent-form-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Owner Full Name</label>
+              <input class="form-input" placeholder="e.g. Rahul Sharma" id="r-owner"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contact Number</label>
+              <input class="form-input" placeholder="+91 98765 43210" id="r-phone"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Truck Registration No.</label>
+              <input class="form-input" placeholder="MH 04 AB 1234" id="r-reg"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Truck Type</label>
+              <select class="form-input" id="r-type">
+                <option>Mini Truck (1–2 Ton)</option>
+                <option>Light Commercial (2–5 Ton)</option>
+                <option>Medium Truck (5–12 Ton)</option>
+                <option>Heavy Truck (12–25 Ton)</option>
+                <option>Container Truck (25+ Ton)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Payload Capacity (Tons)</label>
+              <input class="form-input" type="number" placeholder="e.g. 8" id="r-capacity" oninput="updateEarnings()"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Your Daily Rate (₹)</label>
+              <input class="form-input" type="number" placeholder="e.g. 4500" id="r-rate" oninput="updateEarnings()"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Home Base City</label>
+              <input class="form-input" placeholder="e.g. Mumbai" id="r-city"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Operating Routes</label>
+              <input class="form-input" placeholder="e.g. Mumbai–Pune–Nashik" id="r-routes"/>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:.5rem;">
+            <label class="form-label">Additional Notes</label>
+            <textarea class="form-textarea" placeholder="Refrigeration capability, hazmat license, any special features..." id="r-notes"></textarea>
+          </div>
+
+          <div class="earning-preview">
+            <div class="ep-header"><i class="fa-solid fa-chart-line"></i> Projected Earnings</div>
+            <div class="ep-grid">
+              <div class="ep-item">
+                <div class="ep-val green" id="ep-daily">₹0</div>
+                <div class="ep-lbl">Per Day</div>
+              </div>
+              <div class="ep-item">
+                <div class="ep-val green" id="ep-weekly">₹0</div>
+                <div class="ep-lbl">Per Week</div>
+              </div>
+              <div class="ep-item">
+                <div class="ep-val green" id="ep-monthly">₹0</div>
+                <div class="ep-lbl">Per Month</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Payment Payout Setup -->
+          <div style="margin-bottom:1.25rem;">
+            <div class="form-label" style="font-size:.95rem;color:var(--text);margin-bottom:1rem;">
+              <i class="fa-solid fa-building-columns" style="color:var(--accent);margin-right:.4rem;"></i>
+              Payout Bank Account
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Account Holder Name</label>
+                <input class="form-input" placeholder="As per bank records"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Bank Name</label>
+                <input class="form-input" placeholder="e.g. HDFC Bank"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Account Number</label>
+                <input class="form-input" placeholder="••••••••••••" type="password"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">IFSC Code</label>
+                <input class="form-input" placeholder="HDFC0001234"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">UPI ID (Optional)</label>
+              <input class="form-input" placeholder="yourname@upi"/>
+            </div>
+          </div>
+          <button class="btn-primary" style="width:100%;justify-content:center;padding:1rem;" onclick="submitRental()">
+            <i class="fa-solid fa-circle-check"></i> Submit & Start Earning
+          </button>
+        </div>
+      </div>
+
+      <!-- Existing Listings -->
+      <div class="listings-section">
+        <div class="ls-title">Active Listings</div>
+        <table class="listings-table">
+          <thead>
+            <tr>
+              <th>Truck</th><th>Owner</th><th>Type</th><th>Route</th><th>Daily Rate</th><th>Status</th><th>This Month</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-truck">KA 03 LF 6001</td>
+              <td>Adithya P.</td>
+              <td>Heavy (18T)</td>
+              <td>Bangaluru</td>
+              <td>₹6,200</td>
+              <td class="td-status"><span class="rented">Rented</span></td>
+              <td class="td-earnings">₹1,24,000</td>
+            </tr>
+            <tr>
+              <td class="td-truck">KA 03 LF 6001</td>
+              <td>Adithya P.</td>
+              <td>Medium (8T)</td>
+              <td>bengaluru</td>
+              <td>₹3,800</td>
+              <td class="td-status"><span class="rented">Rented</span></td>
+              <td class="td-earnings">₹76,000</td>
+            </tr>
+            <tr>
+              <td class="td-truck">KA 03 LF 6001</td>
+              <td>Adithya P.</td>
+              <td>Light (3T)</td>
+              <td>bengaluru</td>
+              <td>₹2,200</td>
+              <td class="td-status"><span class="idle">Idle</span></td>
+              <td class="td-earnings">₹35,200</td>
+            </tr>
+            <tr>
+              <td class="td-truck">KA 03 LF 6001</td>
+              <td>Adithya P.</td>
+              <td>Container (28T)</td>
+              <td>Bengaluru</td>
+              <td>₹9,500</td>
+              <td class="td-status"><span class="rented">Rented</span></td>
+              <td class="td-earnings">₹1,90,000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    </div><!-- /rent-content -->
+
+    <!-- ─── RENTAL CATALOG ─── -->
+    <div class="rental-catalog">
+      <div class="catalog-header">
+        <div class="catalog-title"><i class="fa-solid fa-truck-moving" style="color:var(--accent);"></i> Trucks Available for Rent</div>
+      </div>
+      <div class="catalog-filters" id="rc-filters">
+        <div class="filter-chip active" onclick="filterRentalCatalog('all',this)">All Types</div>
+        <div class="filter-chip" onclick="filterRentalCatalog('Heavy',this)">Heavy</div>
+        <div class="filter-chip" onclick="filterRentalCatalog('Medium',this)">Medium</div>
+        <div class="filter-chip" onclick="filterRentalCatalog('Light',this)">Light</div>
+        <div class="filter-chip" onclick="filterRentalCatalog('Container',this)">Container</div>
+        <div class="filter-chip" onclick="filterRentalCatalog('Reefer',this)">Reefer</div>
+      </div>
+      <div class="catalog-count" id="rc-count">Showing <span id="rc-count-num">10</span> trucks available for rent</div>
+      <div class="rental-grid" id="rental-grid">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <footer>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:2.5rem;margin-bottom:1rem;">
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          <i class="fa-solid fa-envelope" style="color:var(--accent);"></i>
+          <a href="mailto:support@logisticsshare.in" style="color:var(--text-dim);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">support@logisticsshare.in</a>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          <i class="fa-solid fa-headset" style="color:var(--accent);"></i>
+          <a href="tel:+91 94285 49114 " style="color:var(--text-dim);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">+91 94285 49114</a>
+          <span style="color:var(--text-muted);font-size:.72rem;">(Mon–Sat, 8AM–8PM)</span>
+        </div>
+      </div>
+      <div>© 2026 Logistics<span style="color:var(--accent)">Share</span> · Truck Rental interface </div>
+    </footer>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     PAYMENT MODAL
+═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="payment-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fa-solid fa-lock" style="color:var(--accent);margin-right:.5rem;font-size:1rem;"></i>Secure Payment</div>
+      <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="pay-summary" id="pay-summary">
+        <!-- Filled by JS -->
+      </div>
+      <div class="card-type-row">
+        <div class="card-type selected" onclick="selectCardType(this,'card')"><i class="fa-solid fa-credit-card"></i> Card</div>
+        <div class="card-type" onclick="selectCardType(this,'upi')"><i class="fa-solid fa-mobile-screen"></i> UPI</div>
+        <div class="card-type" onclick="selectCardType(this,'netbanking')"><i class="fa-solid fa-building-columns"></i> Net Banking</div>
+      </div>
+      <div id="card-section">
+        <div class="form-group">
+          <label class="form-label">Card Number</label>
+          <input class="form-input" placeholder="1234  5678  9012  3456" maxlength="19" oninput="formatCard(this)"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cardholder Name</label>
+          <input class="form-input" placeholder="Name on card"/>
+        </div>
+        <div class="card-field-row">
+          <div class="form-group">
+            <label class="form-label">Expiry</label>
+            <input class="form-input" placeholder="MM / YY" maxlength="7"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">CVV</label>
+            <input class="form-input" placeholder="•••" maxlength="4" type="password"/>
+          </div>
+        </div>
+      </div>
+      <div id="upi-section" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">UPI ID</label>
+          <input class="form-input" placeholder="yourname@okaxis"/>
+        </div>
+      </div>
+      <div id="nb-section" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Select Bank</label>
+          <select class="form-input">
+            <option>HDFC Bank</option><option>SBI</option><option>ICICI Bank</option>
+            <option>Axis Bank</option><option>Kotak Bank</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center;padding:.9rem;" onclick="processPayment()">
+        <i class="fa-solid fa-shield-halved"></i> Pay Now
+      </button>
+      <div class="secured-badge"><i class="fa-solid fa-lock"></i> 256-bit SSL Encrypted · PCI DSS Compliant</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon success"><i class="fa-solid fa-circle-check"></i></div>
+  <div id="toast-msg">Payment Successful!</div>
+</div>
+
+
+<script>
+// ─────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────
+const containers = [
+  {
+    id:'MSCU-4482901',
+    name:'MSC LORETO',
+    vessel:'MSC Loreto / IMO 9839266',
+    from:{city:'Chennai',port:'Kamarajar Port',country:'India'},
+    to:{city:'Rotterdam',port:'Port of Rotterdam',country:'Netherlands'},
+    fromMaps:'https://www.google.com/maps/search/Kamarajar+Port+Chennai',
+    toMaps:'https://www.google.com/maps/search/Port+of+Rotterdam',
+    img:'https://imgs.search.brave.com/T8eRGz4BTzf9buwTFNW6mA9q5beWV2G1JmmVHrVjy-Q/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c3VmZm9sa25ld3Mu/Y28udWsvX21lZGlh/L2ltZy9NUkJJTFk0/MEE5OFNHMDNLVUJT/Ri5qcGc',
+    vesselImg:'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=400&q=80',
+    status:'filling',
+    filled:68,
+    totalCBM:28,
+    availCBM:9,
+    pricePerCBM:4200,
+    eta:'22 Jan 2025',
+    type:'20ft Standard',
+    departure:'28 Dec 2024',
+    route:'Chennai → Colombo → Suez → Rotterdam',
+    vesselGRT:'141,000 GT',
+    vesselSpeed:'22 knots',
+    vesselFlag:'🇵🇦 Panama'
+  },
+  {
+    id:'COSCO-7713402',
+    name:'COSCO GALAXY',
+    vessel:'COSCO Galaxy / IMO 9783411',
+    from:{city:'Nhava Sheva',port:'JNPT Mumbai',country:'India'},
+    to:{city:'Hamburg',port:'Port of Hamburg',country:'Germany'},
+    fromMaps:'https://www.google.com/maps/search/JNPT+Mumbai+Port',
+    toMaps:'https://www.google.com/maps/search/Port+of+Hamburg',
+    img:'https://imgs.search.brave.com/x374WZVGabvj36DW34-9-Ff50L9Viunw0ruo9KGLH7k/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9yZXMu/Y2xvdWRpbmFyeS5j/b20vdmVzc2Vsam9p/bi9pbWFnZS91cGxv/YWQvdjE2MjQ4NzM3/NDgvVmVzc2Vsc19p/bWFnZXMvNDc3MjY5/MzAwXzk3OTU2MzRf/MDliOThjODUtNmQx/Yi1mNWRmLWYxMWQt/ZDNiZDJmODczOTgw/XzA5LmpwZWc',
+    status:'filling ',
+    filled:30,
+    totalCBM:35,
+    availCBM:24.5,
+    pricePerCBM:3800,
+    eta:'18 Jan 2025',
+    type:'40ft HC',
+    departure:'4 Jan 2025',
+    route:'Mumbai → Gulf → Suez → Hamburg',
+    vesselGRT:'89,000 GT',
+    vesselSpeed:'19 knots',
+    vesselFlag:'🇨🇳 China'
+  },
+  {
+    id:'EVER-5590034',
+    name:'EVER GIVEN',
+    vessel:'MV Ever Given / IMO 9811000',
+    from:{city:'Mundra',port:'Adani Mundra Port',country:'India'},
+    to:{city:'Felixstowe',port:'Port of Felixstowe',country:'UK'},
+    fromMaps:'https://www.google.com/maps/search/Mundra+Port+Gujarat',
+    toMaps:'https://www.google.com/maps/search/Port+of+Felixstowe+UK',
+    img:'https://imgs.search.brave.com/iiE_8RlrASvp0Ognabh0WZVSwMU44er4n1j5vdV-og8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTIz/Mzg0NTY2NS9waG90/by90aGlzLXBpY3R1/cmUtb24tanVseS03/LTIwMjEtc2hvd3Mt/YS12aWV3LW9mLXRo/ZS1wYW5hbWEtZmxh/Z2dlZC1tdi1ldmVy/LWdpdmVuLWNvbnRh/aW5lci1zaGlwLmpw/Zz9zPTYxMng2MTIm/dz0wJms9MjAmYz1W/dlVFUG9fcUdlUzFN/WFNrVkRsVmlVckhC/MFZIWmRFQWIxWEM0/RHBvekVNPQ',
+    status:'filling',
+    filled:82,
+    totalCBM:22,
+    availCBM:3.9,
+    pricePerCBM:4900,
+    eta:'30 Jan 2025',
+    type:'20ft Reefer',
+    departure:'10 Jan 2025',
+    route:'Mundra → Karachi → Suez → Felixstowe',
+    vesselGRT:'220,940 GT',
+    vesselSpeed:'22.8 knots',
+    vesselFlag:'🇵🇦 Panama'
+  },
+  {
+    id:'MAEU-8812045',
+    name:'MAERSK EDMONTON',
+    vessel:'Maersk Edmonton / IMO 9525945',
+    from:{city:'Kolkata',port:'Syama Prasad Mookerjee Port',country:'India'},
+    to:{city:'Antwerp',port:'Port of Antwerp',country:'Belgium'},
+    fromMaps:'https://www.google.com/maps/search/Kolkata+Port+Trust',
+    toMaps:'https://www.google.com/maps/search/Port+of+Antwerp+Belgium',
+    img:'https://imgs.search.brave.com/Rh88uTwVKxDvKpLU9ihZrb3_5gknOarfB-Eaq-kGWbE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9hcGku/bWFyaXRpbWVvcHRp/bWEuY29tL3Zlc3Nl/bHBpY3R1cmVzLzk0/NTgwMzA',
+    status:'filling',
+    filled:22,
+    totalCBM:40,
+    availCBM:31.2,
+    pricePerCBM:3500,
+    eta:'5 Feb 2025',
+    type:'40ft HC',
+    departure:'12 Jan 2025',
+    route:'Kolkata → Colombo → Suez → Antwerp',
+    vesselGRT:'94,724 GT',
+    vesselSpeed:'20 knots',
+    vesselFlag:'🇩🇰 Denmark'
+  },
+  {
+    id:'OOCL-3307819',
+    name:'OOCL HONG KONG',
+    vessel:'OOCL Hong Kong / IMO 9776171',
+    from:{city:'Nhava Sheva',port:'JNPT Mumbai',country:'India'},
+    to:{city:'Los Angeles',port:'Port of Los Angeles',country:'USA'},
+    fromMaps:'https://www.google.com/maps/search/JNPT+Nhava+Sheva+Mumbai',
+    toMaps:'https://www.google.com/maps/search/Port+of+Los+Angeles',
+    img:'https://imgs.search.brave.com/2wOWiZ6PWTA2edRSMqKMirMgjd4NuVHNfAA2eBrK7Uc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvODA3/NzIxOTM2L3Bob3Rv/L29vY2wtaG9uZy1r/b25nLXRoZS13b3Js/ZHMtbGFyZ2VzdC1j/b250YWluZXItc2hp/cC13aGljaC1jYW4t/Y2FycnktMjEtNDEz/LXR3ZW50eS1mb290/LWNvbnRhaW5lcnMu/anBnP3M9NjEyeDYx/MiZ3PTAmaz0yMCZj/PWxxeEJkV3Rral9V/LWFDX3ZDOGwtTXl4/ekNNMTdoUEZsQmQ1/N3NKUUhadlE9',
+    status:'filling',
+    filled:41,
+    totalCBM:33,
+    availCBM:19.5,
+    pricePerCBM:5600,
+    eta:'10 Feb 2025',
+    type:'40ft Standard',
+    departure:'8 Jan 2025',
+    route:'Mumbai → Colombo → Singapore → LA',
+    vesselGRT:'210,155 GT',
+    vesselSpeed:'21.5 knots',
+    vesselFlag:'🇭🇰 Hong Kong'
+  },
+  {
+    id:'HAPAG-6620113',
+    name:'TOKYO EXPRESS',
+    vessel:'Tokyo Express / IMO 9295268',
+    from:{city:'Chennai',port:'Chennai Port',country:'India'},
+    to:{city:'Yokohama',port:'Port of Yokohama',country:'Japan'},
+    fromMaps:'https://www.google.com/maps/search/Chennai+Port+Trust',
+    toMaps:'https://www.google.com/maps/search/Port+of+Yokohama+Japan',
+    img:'https://imgs.search.brave.com/yhNphb_2Ka1vSPmIe7HqCBtWedb7dXTYdHFfj79edZE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c2hpcHBob3Rvcy5j/by51ay9pbWFnZXMv/dG9raW9leHByZXNz/LmpwZw',
+    status:'filling',
+    filled:59,
+    totalCBM:25,
+    availCBM:10.2,
+    pricePerCBM:4700,
+    eta:'28 Jan 2025',
+    type:'20ft Standard',
+    departure:'6 Jan 2025',
+    route:'Chennai → Colombo → Port Klang → Yokohama',
+    vesselGRT:'75,590 GT',
+    vesselSpeed:'24 knots',
+    vesselFlag:'🇩🇪 Germany'
+  },
+  {
+    id:'CMA-9940227',
+    name:'CMA CGM MARCO POLO',
+    vessel:'CMA CGM Marco Polo / IMO 9454436',
+    from:{city:'Kochi',port:'Cochin Port',country:'India'},
+    to:{city:'Sydney',port:'Port Botany Sydney',country:'Australia'},
+    fromMaps:'https://www.google.com/maps/search/Cochin+Port+Kochi',
+    toMaps:'https://www.google.com/maps/search/Port+Botany+Sydney+Australia',
+    img:'https://imgs.search.brave.com/KUBTtnUiu6O9wfY1nhXLxBVnrbhma_yKP1O9Q28qkHI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTIz/MzAwMDEzOC9waG90/by90b3BzaG90LXRo/ZS1jbWEtY2dtLW1h/cmNvLXBvbG8tYW4t/dWx0cmEtbGFyZ2Ut/Y29udGFpbmVyLXZl/c3NlbC13aXRoLWEt/bWF4aW11bS1jYXBh/Y2l0eS1vZi0xNi5q/cGc_cz02MTJ4NjEy/Jnc9MCZrPTIwJmM9/T1VwUk1HUEJ6VlFH/UjlxMGtFckZtMUk1/V3d3a0NzQkJTMnIy/bFp5WWR2TT0',
+    status:'filling',
+    filled:15,
+    totalCBM:38,
+    availCBM:32.3,
+    pricePerCBM:4100,
+    eta:'14 Feb 2025',
+    type:'40ft Reefer',
+    departure:'15 Jan 2025',
+    route:'Kochi → Colombo → Singapore → Fremantle → Sydney',
+    vesselGRT:'187,560 GT',
+    vesselSpeed:'22.5 knots',
+    vesselFlag:'🇫🇷 France'
+  },
+  {
+    id:'EMC-1145903',
+    name:'EVER ACE',
+    vessel:'Ever Ace / IMO 9893890',
+    from:{city:'Mundra',port:'Adani Mundra Port',country:'India'},
+    to:{city:'New York',port:'Port of New York & New Jersey',country:'USA'},
+    fromMaps:'https://www.google.com/maps/search/Mundra+Port+Gujarat+India',
+    toMaps:'https://www.google.com/maps/search/Port+of+New+York+New+Jersey',
+    img:'https://imgs.search.brave.com/t30aIrgfVjeaoc8UHTQbAZ3fyg-WgOlGrQF6n0y5IEw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLmlu/c2lkZXIuY29tLzYx/M2YwNDA5YTMwYWVi/MDAxOGI1MmY1Mj93/aWR0aD03MDA',
+    status:'filling',
+    filled:73,
+    totalCBM:30,
+    availCBM:8.1,
+    pricePerCBM:5200,
+    eta:'20 Feb 2025',
+    type:'40ft HC',
+    departure:'3 Jan 2025',
+    route:'Mundra → Suez → Halifax → New York',
+    vesselGRT:'235,000 GT',
+    vesselSpeed:'23 knots',
+    vesselFlag:'🇹🇼 Taiwan'
+  }
+];
+
+const trucks = [
+  {
+    id:'TK001',
+    name:'TATA Prima 4028.S',
+    img:'https://imgs.search.brave.com/kOD5mI0Kvz8KIV95eZWgIcS_bMmoOksyaYAcpWS2xeE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/bW90b3JiYXplZS5j/b20vSW1hZ2VEYXRh/L21vZGVsLzgwMHg2/MDAvMTgzOTE2Lmpw/Zw',
+    driverName:'Adithya P',
+    driverPhone:'+91 9825 49114',
+    driverAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'20 Ton',
+    length:'32 ft',
+    type:'Heavy',
+    rating:'4.9',
+    pricePerKg:2.8,
+    availSeats:14,
+    routes:['Mumbai','Pune','Nashik','Aurangabad'],
+    status:'available'
+  },
+  {
+    id:'TK002',
+    name:'Ashok Leyland 1920',
+    img:'https://imgs.search.brave.com/7aFsVT6aP8JCwy3X2wLUF_DRDbBP5nc4yBUPIyLV8-w/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9hc3Nl/dHMudHJhY3Rvcmp1/bmN0aW9uLmNvbS90/cnVjay1qdW5jdGlv/bi9hc3NldHMvaW1h/Z2VzL3RydWNrLzE5/MjAtdGlwcGVyLTE2/MTQwNjQ2MTgud2Vi/cD9mb3JtYXQ9d2Vi/cA',
+    driverName:'Adithya P',
+    driverPhone:'+91 94285 49114',
+    driverAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'12 Ton',
+    length:'24 ft',
+    type:'Medium',
+    rating:'4.7',
+    pricePerKg:2.2,
+    availSeats:8,
+    routes:['Chennai','Bangalore','Hyderabad'],
+    status:'available'
+  },
+  {
+    id:'TK003',
+    name:'Eicher Pro 6031',
+    img:'https://imgs.search.brave.com/MQTDDiTIFa00UEh06Dgb0YZssxml5QGl5kVpwRHzb9k/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly81Lmlt/aW1nLmNvbS9kYXRh/NS9aTy9VRS9USC9H/TEFETUlOLTMwNjEv/ZWljaGVyLXByby02/MDMxLTEyLXR5cmVz/LWRpc3RyaWJ1dGlv/bi10cnVjay1ndnct/MzEwMDAta2ctNTAw/eDUwMC5qcGc',
+    driverName:'Adithya P',
+    driverPhone:'+91 94825 49114',
+    driverAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'5 Ton',
+    length:'17 ft',
+    type:'Light',
+    rating:'4.8',
+    pricePerKg:1.6,
+    availSeats:4,
+    routes:['Delhi','Gurgaon','Noida','Agra'],
+    status:'available'
+  },
+  {
+    id:'TK004',
+    name:'BharatBenz 3128C',
+    img:'https://imgs.search.brave.com/1PnljKuvY0Buk11mXKZPQ0WSITg0XBxi0eEB6UkhnwI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly81Lmlt/aW1nLmNvbS9kYXRh/NS9VVy9ESS9MUy9H/TEFETUlOLTkwOTgy/L2JoYXJhdGJlbnot/MzEyOGNtLXRpcHBl/ci10cnVjay1ndnct/MzEwMDAta2ctNTAw/eDUwMC5qcGc',
+    driverName:'Adithya P',
+    driverPhone:'+91 94825 49114',
+    driverAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'25 Ton',
+    length:'40 ft',
+    type:'Container',
+    rating:'5.0',
+    pricePerKg:3.1,
+    availSeats:20,
+    routes:['Ahmedabad','Surat','Mumbai','JNPT'],
+    status:'available'
+  },
+  {
+    id:'TK005',
+    name:'Volvo FMX 460',
+    img:'https://imgs.search.brave.com/c38Zwc20ks82bfjKqg-OH_wihErdDdEsQl7hZQye7zU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWcu/bGluZW1lZGlhLmNv/bS9pbWcvcy9kdW1w/LXRydWNrLVZvbHZv/LUZNWC00NjAtUkVU/QVJERVItLS0xNzAw/NjY4NzkyNTEyMTYx/OTg0X2NvbW1vbi0t/MjMxMTIyMTc1MjUx/MDcxNzM2MDAuanBn',
+    driverName:'Adithya P',
+    driverPhone:'+91 94825 49114',
+    driverAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'18 Ton',
+    length:'28 ft',
+    type:'Heavy',
+    rating:'4.6',
+    pricePerKg:2.5,
+    availSeats:12,
+    routes:['Kolkata','Patna','Varanasi'],
+    status:'available'
+  },
+  {
+    id:'TK006',
+    name:'Mahindra Blazo 37',
+    img:'https://imgs.search.brave.com/xKO65OXSGzEuMKJzSxjpuT7iDLyuMShN0kbTTlq_tiY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly81Lmlt/aW1nLmNvbS9kYXRh/NS9JVS9STC9DTC9H/TEFETUlOLTkwMTc3/MjQvYS01MDB4NTAw/LnBuZw',
+    driverName:'Adithya P',
+    driverPhone:'+91 9825 49114',
+    driverAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'8 Ton',
+    length:'20 ft',
+    type:'Medium',
+    rating:'4.5',
+    pricePerKg:1.9,
+    availSeats:6,
+    routes:['Hyderabad','Vijayawada','Vizag'],
+    status:'available'
+  }
+];
+
+// ─────────────────────────────────────────────────────────
+// PAGE NAVIGATION
+// ─────────────────────────────────────────────────────────
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active-nav'));
+  document.getElementById('page-'+name).classList.add('active');
+  const nb = document.getElementById('nav-'+name);
+  if(nb) nb.classList.add('active-nav');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─────────────────────────────────────────────────────────
+// RENDER CONTAINERS
+// ─────────────────────────────────────────────────────────
+function renderContainers(){
+  const wrap = document.getElementById('container-listings');
+  wrap.innerHTML = containers.map((c,i)=>`
+    <div class="container-card" id="cc-${i}">
+      <div class="cc-img">
+        <img src="${c.img}" alt="${c.name}" loading="lazy"/>
+        <div class="cc-status status-${c.status}">${c.status==='available'?'Available':'Filling Fast'}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;">
+        <div class="cc-body">
+          <div class="cc-header">
+            <div class="cc-name">${c.name}</div>
+            <div class="cc-id">${c.id}</div>
+          </div>
+          <div class="cc-route">
+            <div class="route-point">
+              <div class="route-city">${c.from.city}</div>
+              <div class="route-port">${c.from.port}</div>
+              <a class="port-link" href="${c.fromMaps}" target="_blank"><i class="fa-solid fa-location-dot"></i> View on Maps</a>
+            </div>
+            <div class="route-arrow">→</div>
+            <div class="route-point">
+              <div class="route-city">${c.to.city}</div>
+              <div class="route-port">${c.to.port}</div>
+              <a class="port-link" href="${c.toMaps}" target="_blank"><i class="fa-solid fa-location-dot"></i> View on Maps</a>
+            </div>
+          </div>
+          <div class="cc-meta">
+            <div class="meta-item">
+              <div class="meta-label">Container</div>
+              <div class="meta-value">${c.type}</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Available</div>
+              <div class="meta-value">${c.availCBM} CBM</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Departure</div>
+              <div class="meta-value">${c.departure}</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">ETA Dest.</div>
+              <div class="meta-value">${c.eta}</div>
+            </div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-label">
+              <span>Space Used</span>
+              <span>${c.filled}% filled</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${c.filled}%"></div></div>
+          </div>
+          <div class="cc-footer">
+            <div class="price-tag">
+              <div class="price-main">₹${c.pricePerCBM.toLocaleString()}</div>
+              <div class="price-unit">/ CBM</div>
+            </div>
+            <div style="display:flex;gap:.75rem;">
+              <button class="btn-outline" onclick="toggleVessel(${i})"><i class="fa-solid fa-ship"></i> Vessel Info</button>
+              <button class="btn-primary" onclick="openContainerPayment(${i})"><i class="fa-solid fa-bolt"></i> Book Space</button>
+            </div>
+          </div>
+        </div>
+        <div class="vessel-info" id="vi-${i}">
+          <div class="vi-item"><div class="vi-label">Vessel Name</div><div class="vi-val">${c.vessel}</div></div>
+          <div class="vi-item"><div class="vi-label">Full Route</div><div class="vi-val">${c.route}</div></div>
+          <div class="vi-item"><div class="vi-label">GRT</div><div class="vi-val">${c.vesselGRT}</div></div>
+          <div class="vi-item"><div class="vi-label">Max Speed</div><div class="vi-val">${c.vesselSpeed}</div></div>
+          <div class="vi-item"><div class="vi-label">Flag</div><div class="vi-val">${c.vesselFlag}</div></div>
+          <div class="vi-item"><div class="vi-label">Container ID</div><div class="vi-val" style="font-family:'Share Tech Mono',monospace;color:var(--accent3);">${c.id}</div></div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleVessel(i){
+  const el = document.getElementById('vi-'+i);
+  el.classList.toggle('open');
+}
+
+// ─────────────────────────────────────────────────────────
+// RENDER TRUCKS
+// ─────────────────────────────────────────────────────────
+function renderTrucks(){
+  const wrap = document.getElementById('trucks-grid');
+  wrap.innerHTML = trucks.map((t,i)=>`
+    <div class="truck-card">
+      <div class="tc-img">
+        <img src="${t.img}" alt="${t.name}" loading="lazy"/>
+        <div class="tc-overlay"></div>
+        <div class="tc-rating">⭐ ${t.rating}</div>
+      </div>
+      <div class="tc-body">
+        <div class="tc-driver">
+          <div class="driver-avatar"><img src="${t.driverAvatar}" alt="${t.driverName}"/></div>
+          <div>
+            <div class="driver-name">${t.driverName}</div>
+            <div class="driver-phone"><i class="fa-solid fa-phone fa-xs"></i>${t.driverPhone}</div>
+          </div>
+        </div>
+        <div class="tc-truck-name">${t.name}</div>
+        <div class="tc-specs">
+          <div class="tc-spec"><i class="fa-solid fa-weight-hanging"></i>${t.capacity}</div>
+          <div class="tc-spec"><i class="fa-solid fa-ruler-horizontal"></i>${t.length}</div>
+          <div class="tc-spec"><i class="fa-solid fa-tag"></i>${t.type}</div>
+          <div class="tc-spec"><i class="fa-solid fa-users"></i>${t.availSeats} slots left</div>
+        </div>
+        <div class="tc-location-inputs">
+          <div class="loc-input-wrap">
+            <i class="fa-solid fa-circle-dot"></i>
+            <input class="loc-input" placeholder="Pickup City" id="pickup-${i}"/>
+          </div>
+          <div class="loc-input-wrap">
+            <i class="fa-solid fa-location-dot"></i>
+            <input class="loc-input" placeholder="Drop City" id="drop-${i}"/>
+          </div>
+        </div>
+        <div class="tc-footer">
+          <div class="tc-price">
+            <div class="tc-price-main">₹${t.pricePerKg}/kg</div>
+            <div class="tc-price-unit">fractional pricing</div>
+          </div>
+          <button class="btn-primary" onclick="openTruckPayment(${i})">
+            <i class="fa-solid fa-bolt"></i> Book Slot
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─────────────────────────────────────────────────────────
+// PAYMENT MODAL
+// ─────────────────────────────────────────────────────────
+let currentPaymentContext = {};
+
+function openContainerPayment(i){
+  const c = containers[i];
+  currentPaymentContext = {type:'container',data:c};
+  document.getElementById('pay-summary').innerHTML = `
+    <div class="pay-row"><span>Service</span><span>Container Share</span></div>
+    <div class="pay-row"><span>Vessel</span><span>${c.name}</span></div>
+    <div class="pay-row"><span>Route</span><span>${c.from.city} → ${c.to.city}</span></div>
+    <div class="pay-row"><span>Container ID</span><span style="font-family:'Share Tech Mono',monospace;color:var(--accent3);">${c.id}</span></div>
+    <div class="pay-row"><span>Booked Space</span><span>5 CBM</span></div>
+    <div class="pay-row"><span>Rate</span><span>₹${c.pricePerCBM.toLocaleString()}/CBM</span></div>
+    <div class="pay-row total"><span>Total</span><span class="pay-val">₹${(c.pricePerCBM*5).toLocaleString()}</span></div>
+  `;
+  document.getElementById('payment-modal').classList.add('open');
+}
+
+function openTruckPayment(i){
+  const t = trucks[i];
+  const pickup = document.getElementById('pickup-'+i)?.value || 'Not set';
+  const drop = document.getElementById('drop-'+i)?.value || 'Not set';
+  currentPaymentContext = {type:'truck',data:t};
+  document.getElementById('pay-summary').innerHTML = `
+    <div class="pay-row"><span>Service</span><span>Truck Share Booking</span></div>
+    <div class="pay-row"><span>Truck</span><span>${t.name}</span></div>
+    <div class="pay-row"><span>Driver</span><span>${t.driverName}</span></div>
+    <div class="pay-row"><span>Pickup</span><span>${pickup}</span></div>
+    <div class="pay-row"><span>Drop</span><span>${drop}</span></div>
+    <div class="pay-row"><span>Est. Weight</span><span>500 kg</span></div>
+    <div class="pay-row total"><span>Total</span><span class="pay-val">₹${(t.pricePerKg*500).toLocaleString()}</span></div>
+  `;
+  document.getElementById('payment-modal').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('payment-modal').classList.remove('open');
+}
+
+function selectCardType(el,type){
+  document.querySelectorAll('.card-type').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('card-section').style.display = type==='card'?'block':'none';
+  document.getElementById('upi-section').style.display = type==='upi'?'block':'none';
+  document.getElementById('nb-section').style.display = type==='netbanking'?'block':'none';
+}
+
+function formatCard(input){
+  let v = input.value.replace(/\D/g,'').slice(0,16);
+  input.value = v.match(/.{1,4}/g)?.join('  ')||v;
+}
+
+function processPayment(){
+  closeModal();
+  showToast('🎉 Payment Successful! Booking Confirmed.');
+}
+
+// ─────────────────────────────────────────────────────────
+// RENTAL EARNINGS CALCULATOR
+// ─────────────────────────────────────────────────────────
+function updateEarnings(){
+  const rate = parseFloat(document.getElementById('r-rate')?.value)||0;
+  document.getElementById('ep-daily').textContent = rate>0?'₹'+rate.toLocaleString():'₹0';
+  document.getElementById('ep-weekly').textContent = rate>0?'₹'+(rate*7).toLocaleString():'₹0';
+  document.getElementById('ep-monthly').textContent = rate>0?'₹'+(rate*30).toLocaleString():'₹0';
+}
+
+function submitRental(){
+  const owner = document.getElementById('r-owner')?.value;
+  if(!owner){ showToast('⚠️ Please fill in your name.'); return;}
+  showToast('✅ Truck Listed Successfully! Payouts active.');
+}
+
+// ─────────────────────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────────────────────
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// ─────────────────────────────────────────────────────────
+// RENTAL CATALOG DATA
+// ─────────────────────────────────────────────────────────
+const rentalTrucks = [
+  {
+    name:'TATA Prima 4928.S',reg:'KA 03 LF 6001',type:'Heavy',
+    img:'https://imgs.search.brave.com/A-cqKUzzp8ezOZiUEt_P10OJQxtC2Ua_XLwVnogO2js/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9yZXMu/Y2xvdWRpbmFyeS5j/b20vZG5yZWVvYmF2/L2ltYWdlL2ZldGNo/L2Nfc2NhbGUscV8z/MCx3XzM1MCxmX2F1/dG8vbF90ZXh0OkFy/aWFsXzIwX2JvbGQ6/VHJ1Y2tzQnVzZXMu/Y29tLHhfNzAseV8x/MDAsY29fcmdiOmZm/ZmZmZi9odHRwczov/L3d3dy50cnVja3Ni/dXNlcy5jb20vdXBs/b2Fkcy85OV9hNmJh/YWRmZWIwNzg0NmM4/YTcxMmU5YWI1ODgw/NDcxZHRhdGEtcHJp/bWUtbHgtNTUzMHMt/MDIlMjAoMikuanBn',
+    ownerName:'Adithya P',ownerCity:'bengaluru',
+    ownerAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'28 Ton',length:'40 ft',axles:'6×4',
+    engineCC:'6700cc',hp:'490 HP',year:'2022',
+    dailyRate:9200,available:true,
+    features:['GPS Tracking','Air Suspension','Hydraulic Lift','Dashcam'],
+    routes:'Mumbai · Pune · Nashik · Surat'
+  },
+  {
+    name:'Ashok Leyland Boss 3518',reg:'KA 03 LF 6001',type:'Heavy',
+    img:'https://imgs.search.brave.com/D_W4C36T9uSzZ-QYYHtxGYp8I2Y6hz_hvXD4Vji8y3w/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly81Lmlt/aW1nLmNvbS9kYXRh/NS9RVC9KSy9GUi9H/TEFETUlOLTMwNjEv/YXNob2stbGV5bGFu/ZC11LTM1MTgtYnNp/di10cnVjay10cmFj/dG9ycy1nY3ctMzUy/MDAta2ctNTAweDUw/MC5qcGc',
+    ownerName:'Adithya P',ownerCity:'bengaluru',
+    ownerAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'22 Ton',length:'34 ft',axles:'6×2',
+    engineCC:'5660cc',hp:'380 HP',year:'2021',
+    dailyRate:7400,available:true,
+    features:['GPS Tracking','Cargo Lock','Rear Camera','TPMS'],
+    routes:'Chennai · Bangalore · Hyderabad · Vijayawada'
+  },
+  {
+    name:'Eicher Pro 6031',reg:'KA 03 LF 6001',type:'Medium',
+    img:'https://imgs.search.brave.com/MQTDDiTIFa00UEh06Dgb0YZssxml5QGl5kVpwRHzb9k/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly81Lmlt/aW1nLmNvbS9kYXRh/NS9aTy9VRS9USC9H/TEFETUlOLTMwNjEv/ZWljaGVyLXByby02/MDMxLTEyLXR5cmVz/LWRpc3RyaWJ1dGlv/bi10cnVjay1ndnct/MzEwMDAta2ctNTAw/eDUwMC5qcGc',
+    ownerName:'Adithya P',ownerCity:'Bengaluru',
+    ownerAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'10 Ton',length:'24 ft',axles:'4×2',
+    engineCC:'4780cc',hp:'280 HP',year:'2023',
+    dailyRate:4800,available:true,
+    features:['GPS Tracking','Side Curtain','e-Lock','Fuel Sensor'],
+    routes:'Delhi · NCR · Agra · Jaipur'
+  },
+  {
+    name:'BharatBenz 3128C',reg:'KA 03 LF 6001',type:'Container',
+    img:'https://imgs.search.brave.com/1PnljKuvY0Buk11mXKZPQ0WSITg0XBxi0eEB6UkhnwI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly81Lmlt/aW1nLmNvbS9kYXRh/NS9VVy9ESS9MUy9H/TEFETUlOLTkwOTgy/L2JoYXJhdGJlbnot/MzEyOGNtLXRpcHBl/ci10cnVjay1ndnct/MzEwMDAta2ctNTAw/eDUwMC5qcGc',
+    ownerName:'Adithya P',ownerCity:'Bengaluru',
+    ownerAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'30 Ton',length:'45 ft',axles:'6×4',
+    engineCC:'7700cc',hp:'530 HP',year:'2022',
+    dailyRate:11500,available:true,
+    features:['ISO Container Ready','GPS','Reefer Port','Hazmat Cert'],
+    routes:'Ahmedabad · Surat · JNPT · Mundra'
+  },
+  {
+    name:'Mahindra Furio 17',reg:'KA 03 LF 6001',type:'Light',
+    img:'https://imgs.search.brave.com/0nafon9OHlnMnleTf9TxHNZzUgVZ4CyQhJyyNzzgkD4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/bW90b3JiYXplZS5j/b20vSW1hZ2VEYXRh/L21vZGVsLzgwMHg2/MDAvMTgzMTYyLmpw/Zw',
+    ownerName:'Adithya P',ownerCity:'Bangalore',
+    ownerAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'4 Ton',length:'16 ft',axles:'4×2',
+    engineCC:'2500cc',hp:'170 HP',year:'2023',
+    dailyRate:2600,available:true,
+    features:['GPS Tracking','Climate Control','Load Sensor','App Control'],
+    routes:'Bangalore · Mysore · Mangalore · Kochi'
+  },
+  {
+    name:'Volvo FMX 500 Reefer',reg:'KA 03 LF 6001',type:'Reefer',
+    img:'https://imgs.search.brave.com/JuWNiMzi_mu7i_WLM-aYOmCfOyRMu5VOM2rCCjvjhPk/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWcu/bGluZW1lZGlhLmNv/bS9pbWcvcy9kdW1w/LXRydWNrLVZvbHZv/LUZNWC01MDAtOHg0/LVRJUFBFUi02MC1U/T05TLS0tMTc1MzY4/NTg5NzEzMTAzMzUy/OV9jb21tb24tLTI1/MDcyODA5NTgxMzcz/NTgyNzAwLmpwZw',
+    ownerName:'Adithya P',ownerCity:'Bengaluru',
+    ownerAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'20 Ton',length:'36 ft',axles:'6×4',
+    engineCC:'12800cc',hp:'500 HP',year:'2023',
+    dailyRate:13000,available:true,
+    features:['Temp: −25°C to +25°C','Multi-Zone','Solar Assist','Remote Monitoring'],
+    routes:'Pune · Mumbai · Nashik · Aurangabad'
+  },
+  {
+    name:'TATA LPT 2518',reg:'KA 03 LF 6001',type:'Medium',
+    img:'https://imgs.search.brave.com/eGDfSDtfDNOTBhI-Bp2YI4pPNyie0KcHMxquSn9ROjo/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4x/LmFjZWRtcy5jb20v/cTc1L3Bob3Rvcy9s/aXN0aW5nLzIwMTkt/MDQtMjkvNzRhMDA1/NzMyOTBiMjNkODA1/OGU2MDY2MWZhNmZk/NDBfbGFyZ2UuanBn/LndlYnA_d2lkdGg9/NjQw',
+    ownerName:'Adithya P',ownerCity:'Bengaluru',
+    ownerAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'14 Ton',length:'28 ft',axles:'4×2',
+    engineCC:'5700cc',hp:'320 HP',year:'2020',
+    dailyRate:5200,available:false,
+    features:['GPS','Cargo Net','Side Rails','Crane Hook'],
+    routes:'Jaipur · Jodhpur · Kota · Delhi'
+  },
+  {
+    name:'Scania R 500',reg:'KA 03 LF 6001',type:'Heavy',
+    img:'https://imgs.search.brave.com/BOngqMtAgBAwswZQglSKmKHSwJMMW9cZadNOzfBKoiA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9kMmU1/YjhzaGF3dWVsMi5j/bG91ZGZyb250Lm5l/dC92ZWhpY2xlLzMy/Mzk0My9obHYvNjAw/LmpwZw',
+    ownerName:'Adithya P',ownerCity:'Bengaluru',
+    ownerAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'26 Ton',length:'38 ft',axles:'6×4',
+    engineCC:'12740cc',hp:'500 HP',year:'2022',
+    dailyRate:10800,available:true,
+    features:['GPS + CCTV','Hill Start Aid','Eco Roll','Pneumatic Suspension'],
+    routes:'Hyderabad · Vijayawada · Chennai · Bangalore'
+  },
+  {
+    name:'Force Traveller Carrier',reg:'KA 03 LF 6001',type:'Light',
+    img:'https://imgs.search.brave.com/IBZV2TWYzVKP5F03EExG_jkFrV6YQsAofJ4D4XgL1_c/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly81Lmlt/aW1nLmNvbS9kYXRh/NS9TRUxMRVIvRGVm/YXVsdC8yMDIzLzcv/MzIzMTc5MTIyL1FN/L1RWL1ZFLzI5NjI2/NjI1L3RyYXZlbGxl/ci0zMDUwLTI1MHgy/NTAuanBn',
+    ownerName:'Adithya P',ownerCity:'Bengaluru',
+    ownerAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'2.5 Ton',length:'12 ft',axles:'4×2',
+    engineCC:'2596cc',hp:'140 HP',year:'2023',
+    dailyRate:1800,available:true,
+    features:['Urban Delivery','GPS','Box Body','Last-Mile Ready'],
+    routes:'Bhopal · Indore · Nagpur · Jabalpur'
+  },
+  {
+    name:'Isuzu NQR 90-19',reg:'KA 03 LF 6001',type:'Medium',
+    img:'https://imgs.search.brave.com/T9nRgFqvEP-cLlRyfi_v2npVZeFK5on3HZ01jyCyGH8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9oZHBp/Yy5jbHViL3VwbG9h/ZHMvcG9zdHMvMjAy/MS0xMi90aHVtYnMv/MTY0MDkwMTI5MV8z/OS1oZHBpYy1jbHVi/LXAtaXN1enUtbnFy/OTAtNzAuanBn',
+    ownerName:'Adithya P',ownerCity:'Bengaluru',
+    ownerAvatar:'https://imgs.search.brave.com/BusPQb9nLSop7o-H0Z430q7-vz-dic3L5qMvP_dZtb4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzc0L2Ez/L2I2Lzc0YTNiNmE4/ODU2YjAwNGRmZmY4/MjRhZTk2NjhmZTli/LmpwZw',
+    capacity:'9 Ton',length:'22 ft',axles:'4×2',
+    engineCC:'4300cc',hp:'215 HP',year:'2021',
+    dailyRate:4100,available:false,
+    features:['GPS','Side Curtain Body','Lashing Rings','Speed Limiter'],
+    routes:'Kolkata · Patna · Bhubaneswar · Guwahati'
+  }
+];
+
+let currentFilter = 'all';
+let expandedRentalCards = new Set();
+
+function renderRentalCatalog(filter){
+  const grid = document.getElementById('rental-grid');
+  const filtered = filter==='all' ? rentalTrucks : rentalTrucks.filter(t=>t.type===filter);
+  document.getElementById('rc-count-num').textContent = filtered.length;
+
+  const badgeClass = {Heavy:'badge-heavy',Medium:'badge-medium',Light:'badge-light',Container:'badge-container',Reefer:'badge-reefer'};
+
+  grid.innerHTML = filtered.length === 0
+    ? `<div class="catalog-empty"><i class="fa-solid fa-truck" style="font-size:2rem;margin-bottom:.75rem;display:block;opacity:.3;"></i>No trucks found for this category.</div>`
+    : filtered.map((t)=>{
+      const origIdx = rentalTrucks.indexOf(t);
+      const key = 'r'+origIdx;
+      return `
+      <div class="rental-card" id="rcard-${key}">
+        <div class="rc-img">
+          <img src="${t.img}" alt="${t.name}" loading="lazy"/>
+          <div class="rc-img-overlay"></div>
+          <div class="rc-type-badge ${badgeClass[t.type]}">${t.type}</div>
+          <div class="rc-avail ${t.available?'avail-yes':'avail-no'}">${t.available?'● Available':'○ Booked'}</div>
+        </div>
+        <div class="rc-body">
+          <div class="rc-truck-name">${t.name}</div>
+          <div class="rc-reg">${t.reg}</div>
+          <div class="rc-specs-row">
+            <div class="rc-spec-pill"><i class="fa-solid fa-weight-hanging"></i>${t.capacity}</div>
+            <div class="rc-spec-pill"><i class="fa-solid fa-ruler-horizontal"></i>${t.length}</div>
+            <div class="rc-spec-pill"><i class="fa-solid fa-gear"></i>${t.hp}</div>
+            <div class="rc-spec-pill"><i class="fa-solid fa-calendar"></i>${t.year}</div>
+          </div>
+          <div class="rc-owner">
+            <div class="rc-owner-av"><img src="${t.ownerAvatar}" alt="${t.ownerName}"/></div>
+            <div>
+              <div class="rc-owner-name">${t.ownerName}</div>
+              <div class="rc-owner-loc"><i class="fa-solid fa-location-dot fa-xs"></i>${t.ownerCity}</div>
+            </div>
+          </div>
+          <div class="rc-features">
+            ${t.features.map(f=>`<div class="rc-feat"><i class="fa-solid fa-check"></i>${f}</div>`).join('')}
+          </div>
+          <div class="rc-footer">
+            <div class="rc-price-wrap">
+              <div class="rc-price">₹${t.dailyRate.toLocaleString()}</div>
+              <div class="rc-price-unit">per day</div>
+            </div>
+            <div class="rc-actions">
+              <div class="rc-info-btn" title="View Details" onclick="toggleRentalExpand('${key}')">
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              ${t.available
+                ? `<button class="btn-primary" style="padding:.5rem 1rem;font-size:.8rem;" onclick="openRentalPaymentByIndex(${origIdx})"><i class="fa-solid fa-bolt"></i> Rent Now</button>`
+                : `<button class="btn-outline" style="padding:.5rem 1rem;font-size:.8rem;opacity:.5;pointer-events:none;"><i class="fa-solid fa-clock"></i> Unavailable</button>`
+              }
+            </div>
+          </div>
+        </div>
+        <div class="rc-expanded" id="rcexp-${key}">
+          <div class="rc-expand-grid">
+            <div class="re-item"><div class="re-lbl">Engine</div><div class="re-val">${t.engineCC}</div></div>
+            <div class="re-item"><div class="re-lbl">Axle Config</div><div class="re-val">${t.axles}</div></div>
+            <div class="re-item"><div class="re-lbl">Horsepower</div><div class="re-val">${t.hp}</div></div>
+            <div class="re-item"><div class="re-lbl">Year</div><div class="re-val">${t.year}</div></div>
+            <div class="re-item" style="grid-column:1/-1;"><div class="re-lbl">Operating Routes</div><div class="re-val">${t.routes}</div></div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+function toggleRentalExpand(key){
+  const el = document.getElementById('rcexp-'+key);
+  const card = document.getElementById('rcard-'+key);
+  const btn = card.querySelector('.rc-info-btn i');
+  el.classList.toggle('open');
+  btn.style.transform = el.classList.contains('open') ? 'rotate(180deg)' : '';
+  btn.style.transition = 'transform .25s';
+}
+
+function filterRentalCatalog(type, chipEl){
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  chipEl.classList.add('active');
+  currentFilter = type;
+  renderRentalCatalog(type);
+}
+
+function openRentalPaymentByIndex(idx){
+  openRentalPayment(rentalTrucks[idx]);
+}
+
+function openRentalPayment(t){
+  currentPaymentContext = {type:'rental',data:t};
+  document.getElementById('pay-summary').innerHTML = `
+    <div class="pay-row"><span>Service</span><span>Truck Rental</span></div>
+    <div class="pay-row"><span>Truck</span><span>${t.name}</span></div>
+    <div class="pay-row"><span>Registration</span><span style="font-family:'Share Tech Mono',monospace;color:var(--accent3);">${t.reg}</span></div>
+    <div class="pay-row"><span>Owner</span><span>${t.ownerName} · ${t.ownerCity}</span></div>
+    <div class="pay-row"><span>Daily Rate</span><span>₹${t.dailyRate.toLocaleString()}</span></div>
+    <div class="pay-row"><span>Rental Duration</span><span>1 Day</span></div>
+    <div class="pay-row"><span>Platform Fee (5%)</span><span>₹${Math.round(t.dailyRate*0.05).toLocaleString()}</span></div>
+    <div class="pay-row total"><span>Total</span><span class="pay-val">₹${Math.round(t.dailyRate*1.05).toLocaleString()}</span></div>
+  `;
+  document.getElementById('payment-modal').classList.add('open');
+}
+
+
+renderContainers();
+renderTrucks();
+renderRentalCatalog('all');
+
+// Close modal on overlay click
+document.getElementById('payment-modal').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+
+// Nav on mobile - tap logo goes home
+document.querySelector('.nav-logo').addEventListener('click',()=>showPage('home'));
+</script>
+</body>
+</html>

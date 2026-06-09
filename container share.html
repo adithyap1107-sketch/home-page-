@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Container Share | Fractional Shipment Logistics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@500&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .dark-gradient {
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+        }
+
+        .ship-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+        }
+
+        .ship-card:hover {
+            transform: translateY(-10px);
+            border-color: #3b82f6;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5);
+        }
+
+        .container-id-badge {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+        }
+
+        .map-link {
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .map-link:hover {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <div class="p-2 bg-blue-600 rounded-lg">
+                        <i class="fas fa-ship text-white text-xl"></i>
+                    </div>
+                    <span class="text-2xl font-bold tracking-tight text-white">Container Share</span>
+                </div>
+                <div class="hidden md:flex space-x-8 font-medium">
+                    <a href="#home" class="hover:text-blue-400 transition">Home</a>
+                    <a href="#routes" class="hover:text-blue-400 transition">Routes</a>
+                    <a href="#calculator" class="hover:text-blue-400 transition">Calculator</a>
+                    <a href="#support" class="hover:text-blue-400 transition">Support</a>
+                </div>
+                <button onclick="scrollToSection('routes')" class="bg-blue-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-blue-700 transition shadow-lg shadow-blue-900/20">
+                    Get Started
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="dark-gradient text-white py-24 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    </span>
+                    Live Tracking Enabled
+                </div>
+                <h1 class="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight">
+                    Fractional Shipping <br><span class="text-blue-500">Simplified.</span>
+                </h1>
+                <p class="text-lg text-slate-400 max-w-lg">
+                    Connect with global ports through shared container space. Pay only for the volume you need, from Mumbai to Busan and beyond.
+                </p>
+                <div class="flex gap-4">
+                    <button onclick="scrollToSection('routes')" class="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-xl shadow-blue-900/40">
+                        Find a Route
+                    </button>
+                    <a href="tel:+9118005550199" class="flex items-center gap-3 px-6 py-4 rounded-xl border border-slate-700 hover:bg-slate-800 transition">
+                        <i class="fas fa-headset text-blue-500"></i>
+                        <span class="font-bold">Contact Support</span>
+                    </a>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="animate-float">
+                    <img src="https://images.unsplash.com/photo-1494412519320-aa613dfb7738?auto=format&fit=crop&q=80&w=800" alt="Cargo Ship" class="rounded-3xl shadow-2xl border-2 border-white/5 grayscale-[20%] hover:grayscale-0 transition-all duration-700">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Active Routes Section -->
+    <section id="routes" class="py-20 bg-slate-950">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="mb-12 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Current Active Routes</h2>
+                <p class="text-slate-400 mt-2">Click port locations to view on map</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8" id="route-cards">
+                <!-- Card 1 -->
+                <div class="rounded-2xl overflow-hidden shadow-sm ship-card transition-all duration-300">
+                    <div class="h-48 relative overflow-hidden group">
+                        <img src="https://static.vesselfinder.net/ship-photo/9870977-538008859-a858974c1a0855a757ac1b73752b8965/1?v1" alt="Ever Given" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute top-4 right-4 bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full">80% FULL</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h3 class="font-bold text-xl text-white">Vessel: MS Explorer</h3>
+                            <div class="mt-2 inline-flex items-center gap-2 container-id-badge px-3 py-1 rounded text-blue-400 text-xs font-semibold">
+                                <i class="fas fa-barcode"></i> CX-9902
+                            </div>
+                        </div>
+                        <div class="space-y-4 mb-6 relative">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-blue-400 border border-slate-700 shrink-0">
+                                    <i class="fas fa-anchor"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Origin</p>
+                                    <p class="text-sm font-semibold text-slate-200">Nhava Sheva, Mumbai</p>
+                                    <a href="https://www.google.com/maps/search/Nhava+Sheva+Port+Terminal" target="_blank" class="text-[10px] text-blue-500 font-bold uppercase tracking-wider map-link">
+                                        <i class="fas fa-map-marker-alt"></i> Open in Maps
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-red-400 border border-slate-700 shrink-0">
+                                    <i class="fas fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Destination</p>
+                                    <p class="text-sm font-semibold text-slate-200">Port of Singapore</p>
+                                    <a href="https://www.google.com/maps/search/Port+of+Singapore+Container+Terminal" target="_blank" class="text-[10px] text-blue-500 font-bold uppercase tracking-wider map-link">
+                                        <i class="fas fa-map-marker-alt"></i> Open in Maps
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                            <div>
+                                <p class="text-xs text-slate-500">Price</p>
+                                <p class="text-lg font-bold text-blue-500">₹12,499</p>
+                            </div>
+                            <button onclick="openBooking('Nhava Sheva', 'Singapore', 12499)" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="rounded-2xl overflow-hidden shadow-sm ship-card transition-all duration-300">
+                    <div class="h-48 relative overflow-hidden group">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSK7ZxMb_7rLS8lqtdPhcMvHiTW68jQGE_IGg&s" alt="Titan" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute top-4 right-4 bg-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full">45% FULL</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h3 class="font-bold text-xl text-white">Vessel: Blue Titan</h3>
+                            <div class="mt-2 inline-flex items-center gap-2 container-id-badge px-3 py-1 rounded text-blue-400 text-xs font-semibold">
+                                <i class="fas fa-barcode"></i> BT-1120
+                            </div>
+                        </div>
+                        <div class="space-y-4 mb-6 relative">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-blue-400 border border-slate-700 shrink-0">
+                                    <i class="fas fa-anchor"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Origin</p>
+                                    <p class="text-sm font-semibold text-slate-200">Mundra Port, Gujarat</p>
+                                    <a href="https://www.google.com/maps/search/Mundra+Port+Adani" target="_blank" class="text-[10px] text-blue-500 font-bold uppercase tracking-wider map-link">
+                                        <i class="fas fa-map-marker-alt"></i> Open in Maps
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-red-400 border border-slate-700 shrink-0">
+                                    <i class="fas fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Destination</p>
+                                    <p class="text-sm font-semibold text-slate-200">Jebel Ali, Dubai</p>
+                                    <a href="https://www.google.com/maps/search/Jebel+Ali+Port+Dubai" target="_blank" class="text-[10px] text-blue-500 font-bold uppercase tracking-wider map-link">
+                                        <i class="fas fa-map-marker-alt"></i> Open in Maps
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                            <div>
+                                <p class="text-xs text-slate-500">Price</p>
+                                <p class="text-lg font-bold text-blue-500">₹18,200</p>
+                            </div>
+                            <button onclick="openBooking('Mundra', 'Dubai', 18200)" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="rounded-2xl overflow-hidden shadow-sm ship-card transition-all duration-300">
+                    <div class="h-48 relative overflow-hidden group">
+                        <img src="https://msc-p-001.sitecorecontenthub.cloud/api/public/content/78ed26e5c2bb45bfa82ee496ad8cade8?v=c476ad00?w=690" alt="Oceanic" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute top-4 right-4 bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full">92% FULL</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h3 class="font-bold text-xl text-white">Vessel: SS Oceanic</h3>
+                            <div class="mt-2 inline-flex items-center gap-2 container-id-badge px-3 py-1 rounded text-blue-400 text-xs font-semibold">
+                                <i class="fas fa-barcode"></i> OC-4431
+                            </div>
+                        </div>
+                        <div class="space-y-4 mb-6 relative">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-blue-400 border border-slate-700 shrink-0">
+                                    <i class="fas fa-anchor"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Origin</p>
+                                    <p class="text-sm font-semibold text-slate-200">Chennai Port, India</p>
+                                    <a href="https://www.google.com/maps/search/Chennai+Port+Trust" target="_blank" class="text-[10px] text-blue-500 font-bold uppercase tracking-wider map-link">
+                                        <i class="fas fa-map-marker-alt"></i> Open in Maps
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-red-400 border border-slate-700 shrink-0">
+                                    <i class="fas fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Destination</p>
+                                    <p class="text-sm font-semibold text-slate-200">Port of Rotterdam</p>
+                                    <a href="https://www.google.com/maps/search/Port+of+Rotterdam+The+Netherlands" target="_blank" class="text-[10px] text-blue-500 font-bold uppercase tracking-wider map-link">
+                                        <i class="fas fa-map-marker-alt"></i> Open in Maps
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                            <div>
+                                <p class="text-xs text-slate-500">Price</p>
+                                <p class="text-lg font-bold text-blue-500">₹42,500</p>
+                            </div>
+                            <button onclick="openBooking('Chennai', 'Rotterdam', 42500)" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="rounded-2xl overflow-hidden shadow-sm ship-card transition-all duration-300">
+                    <div class="h-48 relative overflow-hidden group">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-V0bFgnyrvchkDZbLl-Pwyqdd5x0mo11-tQ&s" alt="Eastern Star" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">NEW ROUTE</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h3 class="font-bold text-xl text-white">Vessel: Eastern Star</h3>
+                            <div class="mt-2 inline-flex items-center gap-2 container-id-badge px-3 py-1 rounded text-blue-400 text-xs font-semibold">
+                                <i class="fas fa-barcode"></i> ES-8812
+                            </div>
+                        </div>
+                        <div class="space-y-4 mb-6 relative">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-blue-400 border border-slate-700 shrink-0">
+                                    <i class="fas fa-anchor"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Origin</p>
+                                    <p class="text-sm font-semibold text-slate-200">Kolkata Port, WB</p>
+                                    <a href="https://www.google.com/maps/search/Kolkata+Port+Syama+Prasad+Mookerjee" target="_blank" class="text-[10px] text-blue-500 font-bold uppercase tracking-wider map-link">
+                                        <i class="fas fa-map-marker-alt"></i> Open in Maps
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-red-400 border border-slate-700 shrink-0">
+                                    <i class="fas fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Destination</p>
+                                    <p class="text-sm font-semibold text-slate-200">Colombo Port, Sri Lanka</p>
+                                    <a href="https://www.google.com/maps/search/Colombo+Port+Sri+Lanka" target="_blank" class="text-[10px] text-blue-500 font-bold uppercase tracking-wider map-link">
+                                        <i class="fas fa-map-marker-alt"></i> Open in Maps
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                            <div>
+                                <p class="text-xs text-slate-500">Price</p>
+                                <p class="text-lg font-bold text-blue-500">₹8,900</p>
+                            </div>
+                            <button onclick="openBooking('Kolkata', 'Colombo', 8900)" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="rounded-2xl overflow-hidden shadow-sm ship-card transition-all duration-300">
+                    <div class="h-48 relative overflow-hidden group">
+                        <img src="https://www.aljazeera.com/wp-content/uploads/2023/08/RC24S2ASCYXP-1692688423.jpg?resize=730%2C410&quality=80" alt="Northern Wind" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute top-4 right-4 bg-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full">22% FULL</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h3 class="font-bold text-xl text-white">Vessel: Northern Wind</h3>
+                            <div class="mt-2 inline-flex items-center gap-2 container-id-badge px-3 py-1 rounded text-blue-400 text-xs font-semibold">
+                                <i class="fas fa-barcode"></i> NW-4005
+                            </div>
+                        </div>
+                        <div class="space-y-4 mb-6 relative">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-blue-400 border border-slate-700 shrink-0">
+                                    <i class="fas fa-anchor"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Origin</p>
+                                    <p class="text-sm font-semibold text-slate-200">Kochi Port, Kerala</p>
+                                    <a href="https://www.google.com/maps/search/Kochi+Port+Trust+Vallarpadam" target="_blank" class="text-[10px] text-blue-500 font-bold uppercase tracking-wider map-link">
+                                        <i class="fas fa-map-marker-alt"></i> Open in Maps
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-red-400 border border-slate-700 shrink-0">
+                                    <i class="fas fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Destination</p>
+                                    <p class="text-sm font-semibold text-slate-200">Hamburg, Germany</p>
+                                    <a href="https://www.google.com/maps/search/Port+of+Hamburg+Germany" target="_blank" class="text-[10px] text-blue-500 font-bold uppercase tracking-wider map-link">
+                                        <i class="fas fa-map-marker-alt"></i> Open in Maps
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                            <div>
+                                <p class="text-xs text-slate-500">Price</p>
+                                <p class="text-lg font-bold text-blue-500">₹38,700</p>
+                            </div>
+                            <button onclick="openBooking('Kochi', 'Hamburg', 38700)" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="rounded-2xl overflow-hidden shadow-sm ship-card transition-all duration-300">
+                    <div class="h-48 relative overflow-hidden group">
+                        <img src="https://piernext.portdebarcelona.cat/wp-content/uploads/2025/05/MSC-Loreto-1024x576.jpeg" alt="Pacific Crest" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute top-4 right-4 bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full">FAST TRACK</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h3 class="font-bold text-xl text-white">Vessel: Pacific Crest</h3>
+                            <div class="mt-2 inline-flex items-center gap-2 container-id-badge px-3 py-1 rounded text-blue-400 text-xs font-semibold">
+                                <i class="fas fa-barcode"></i> PC-1022
+                            </div>
+                        </div>
+                        <div class="space-y-4 mb-6 relative">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-blue-400 border border-slate-700 shrink-0">
+                                    <i class="fas fa-anchor"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Origin</p>
+                                    <p class="text-sm font-semibold text-slate-200">Vizag Port, AP</p>
+                                    <a href="https://www.google.com/maps/search/Visakhapatnam+Port+Trust" target="_blank" class="text-[10px] text-blue-500 font-bold uppercase tracking-wider map-link">
+                                        <i class="fas fa-map-marker-alt"></i> Open in Maps
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-red-400 border border-slate-700 shrink-0">
+                                    <i class="fas fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Destination</p>
+                                    <p class="text-sm font-semibold text-slate-200">Busan Port, S. Korea</p>
+                                    <a href="https://www.google.com/maps/search/Port+of+Busan+South+Korea" target="_blank" class="text-[10px] text-blue-500 font-bold uppercase tracking-wider map-link">
+                                        <i class="fas fa-map-marker-alt"></i> Open in Maps
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                            <div>
+                                <p class="text-xs text-slate-500">Price</p>
+                                <p class="text-lg font-bold text-blue-500">₹21,500</p>
+                            </div>
+                            <button onclick="openBooking('Vizag', 'Busan', 21500)" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section id="calculator" class="py-24 bg-slate-900/50">
+        <div class="max-w-4xl mx-auto px-4 bg-slate-900 rounded-3xl shadow-2xl p-8 md:p-12 border border-slate-800">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-white">Fractional Cost Calculator</h2>
+                <p class="text-slate-400">Estimate your costs instantly</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-400 mb-2">Container Type</label>
+                        <select id="cont-size" class="w-full p-4 bg-slate-950 border border-slate-800 rounded-xl outline-none text-white">
+                            <option value="20">20ft Container (33 CBM)</option>
+                            <option value="40">40ft Container (67 CBM)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-400 mb-2">Cargo Volume (CBM)</label>
+                        <input type="range" id="vol-range" min="1" max="20" step="0.5" value="5" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                        <div class="flex justify-between text-sm mt-4 font-medium">
+                            <span class="text-slate-500">1 CBM</span>
+                            <span id="vol-value" class="text-blue-400 font-bold bg-blue-500/10 px-3 py-1 rounded-full">5 CBM</span>
+                            <span class="text-slate-500">20 CBM</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-950 p-8 rounded-3xl text-center border border-slate-800">
+                    <p class="text-slate-400 font-medium">Estimated Share Price</p>
+                    <div class="text-5xl font-extrabold text-blue-500 my-4" id="price-display">₹15,000</div>
+                    <button onclick="scrollToSection('routes')" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-blue-900/40 hover:bg-blue-700 transition">
+                        Select a Route
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Modal (Simplified) -->
+    <div id="booking-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="modal-overlay absolute inset-0" onclick="closeBooking()"></div>
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-2xl relative z-10 overflow-hidden shadow-2xl flex flex-col md:flex-row">
+            <div class="md:w-1/3 dark-gradient p-8 text-white">
+                <h3 class="text-2xl font-bold mb-4">Reserve</h3>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-blue-500 text-xs font-bold uppercase">Route</p>
+                        <p class="font-bold text-lg" id="modal-route-text">-</p>
+                    </div>
+                    <div>
+                        <p class="text-blue-500 text-xs font-bold uppercase">Base Price</p>
+                        <p class="font-bold text-lg" id="modal-price-text">-</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="md:w-2/3 p-8 bg-slate-900" id="payment-step-1">
+                <h4 class="text-xl font-bold mb-6 text-white">Shipper Details</h4>
+                <form onsubmit="handleDetails(event)" class="space-y-4">
+                    <input type="text" placeholder="Full Name" required class="w-full p-4 border border-slate-800 rounded-xl bg-slate-950 text-white">
+                    <input type="email" placeholder="Email" required class="w-full p-4 border border-slate-800 rounded-xl bg-slate-950 text-white">
+                    <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition">Next Step</button>
+                </form>
+            </div>
+
+            <div class="md:w-2/3 p-8 bg-slate-900 hidden" id="payment-step-2">
+                <h4 class="text-xl font-bold mb-6 text-white">Payment</h4>
+                <div class="h-48 flex flex-col items-center justify-center text-center space-y-4">
+                    <div class="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center text-2xl">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <p class="text-white font-bold">Booking Confirmed!</p>
+                    <button onclick="closeBooking()" class="text-blue-500 underline text-sm">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer id="support" class="bg-slate-950 text-white py-16 border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-12 text-left">
+                <!-- Brand Info -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <div class="p-2 bg-blue-600 rounded-lg">
+                            <i class="fas fa-ship text-white text-sm"></i>
+                        </div>
+                        <span class="text-xl font-bold">Container Share</span>
+                    </div>
+                    <p class="text-slate-500 text-sm max-w-xs">Leading the revolution in global logistics through fractional container ownership and collaborative shipping solutions.</p>
+                </div>
+
+                <!-- Customer Care -->
+                <div class="space-y-4">
+                    <h5 class="font-bold text-white uppercase text-xs tracking-widest border-l-2 border-blue-600 pl-3">Customer Care</h5>
+                    <div class="space-y-3">
+                        <a href="tel:+9118005550199" class="flex items-center gap-3 group">
+                            <div class="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-500 uppercase font-bold">Call Support</p>
+                                <p class="text-sm font-semibold text-slate-200">+91 94825 49114</p>
+                            </div>
+                        </a>
+                        <a href="mailto:support@containershare.in" class="flex items-center gap-3 group">
+                            <div class="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-500 uppercase font-bold">Email Inquiries</p>
+                                <p class="text-sm font-semibold text-slate-200">support@containershare.in</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Company Links -->
+                <div class="space-y-4">
+                    <h5 class="font-bold text-white uppercase text-xs tracking-widest border-l-2 border-blue-600 pl-3">Resources</h5>
+                    <ul class="grid grid-cols-2 gap-2 text-sm text-slate-500">
+                        <li><a href="#home" class="hover:text-blue-400 transition">Home</a></li>
+                        <li><a href="#routes" class="hover:text-blue-400 transition">Routes</a></li>
+                        <li><a href="#calculator" class="hover:text-blue-400 transition">Calculator</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition">Tracking</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-16 pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-slate-600 text-xs">&copy; 2024 Container Share India. All rights reserved.</p>
+                <div class="flex gap-6 text-slate-600">
+                    <a href="#" class="hover:text-white transition"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        const volRange = document.getElementById('vol-range');
+        const volValueDisplay = document.getElementById('vol-value');
+        const contSizeSelect = document.getElementById('cont-size');
+        const priceDisplay = document.getElementById('price-display');
+
+        function updateCalculator() {
+            const vol = parseFloat(volRange.value);
+            const size = parseInt(contSizeSelect.value);
+            volValueDisplay.innerText = `${vol} CBM`;
+            const baseRate = size === 20 ? 3000 : 2500;
+            const price = Math.round(vol * baseRate);
+            priceDisplay.innerText = `₹${price.toLocaleString('en-IN')}`;
+        }
+
+        volRange.addEventListener('input', updateCalculator);
+        contSizeSelect.addEventListener('change', updateCalculator);
+        updateCalculator();
+
+        const modal = document.getElementById('booking-modal');
+        const step1 = document.getElementById('payment-step-1');
+        const step2 = document.getElementById('payment-step-2');
+        const routeText = document.getElementById('modal-route-text');
+        const priceText = document.getElementById('modal-price-text');
+
+        function openBooking(from, to, price) {
+            routeText.innerText = `${from} to ${to}`;
+            priceText.innerText = `₹${price.toLocaleString('en-IN')}`;
+            modal.classList.remove('hidden');
+            step1.classList.remove('hidden');
+            step2.classList.add('hidden');
+        }
+
+        function closeBooking() { modal.classList.add('hidden'); }
+
+        function handleDetails(e) {
+            e.preventDefault();
+            step1.classList.add('hidden');
+            step2.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

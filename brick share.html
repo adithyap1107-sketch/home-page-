@@ -1,0 +1,438 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brick Share | Fractional Ownership</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .property-card:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+        
+        .dark-glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <div class="bg-blue-600 p-2 rounded-lg text-white">
+                        <i class="fas fa-cubes-stacked text-xl"></i>
+                    </div>
+                    <span class="text-2xl font-bold tracking-tight text-white">Brick<span class="text-blue-500">Share</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8 font-medium text-slate-400">
+                    <a href="#" class="hover:text-blue-400 transition">Marketplace</a>
+                    <a href="#" class="hover:text-blue-400 transition">How it Works</a>
+                    <a href="#" class="hover:text-blue-400 transition">Portfolio</a>
+                </div>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full font-semibold transition shadow-lg shadow-blue-900/20">
+                    Get Started
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative bg-slate-950 pt-16 pb-24 overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent opacity-50"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+                Own Premium Real Estate <br>
+                <span class="gradient-text">For 1/5th the Price.</span>
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                Democratizing high-value assets. Every property is split into exactly 5 equal bricks. Start your investment journey with a minimum of ₹25 Lakhs.
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="#marketplace" class="bg-white text-slate-950 px-8 py-4 rounded-xl font-bold hover:bg-slate-200 transition">Explore Listings</a>
+                <div class="flex items-center gap-2 px-6 py-4 text-slate-400">
+                    <i class="fas fa-shield-halved text-green-500"></i>
+                    <span>RERA Certified Platform</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filter Section -->
+    <section id="marketplace" class="py-12 bg-slate-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
+                <h2 class="text-3xl font-bold text-white">Active Opportunities</h2>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="filterProperties('all')" class="filter-btn active bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">All</button>
+                    <button onclick="filterProperties('home')" class="filter-btn bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg text-sm font-semibold hover:border-blue-500 transition">Homes</button>
+                    <button onclick="filterProperties('apartment')" class="filter-btn bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg text-sm font-semibold hover:border-blue-500 transition">Apartments</button>
+                    <button onclick="filterProperties('commercial')" class="filter-btn bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg text-sm font-semibold hover:border-blue-500 transition">Godowns</button>
+                    <button onclick="filterProperties('land')" class="filter-btn bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg text-sm font-semibold hover:border-blue-500 transition">Farm Plots</button>
+                </div>
+            </div>
+
+            <!-- Property Grid -->
+            <div id="property-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Properties will be injected here via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Details Modal -->
+    <div id="propertyModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
+        <div class="modal-overlay absolute inset-0" onclick="closeModal()"></div>
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative z-10 shadow-2xl custom-scrollbar">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-500 hover:text-white transition z-20">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <div id="modalContent" class="flex flex-col md:flex-row">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4">
+        <div class="modal-overlay absolute inset-0"></div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-8 relative z-10 shadow-2xl">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-blue-900/30 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-lock text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white">Secure Brick Purchase</h3>
+                <p class="text-slate-400">Processing investment for <span id="pay-property-name" class="font-semibold text-blue-400"></span></p>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="p-4 bg-slate-950 rounded-xl flex justify-between items-center border border-slate-800">
+                    <span class="text-slate-400">Investment Amount (1 Brick)</span>
+                    <span class="font-bold text-lg text-white">₹<span id="pay-amount"></span></span>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-2">Select Payment Method</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="p-3 border-2 border-blue-600 bg-blue-900/20 rounded-lg text-center text-sm font-semibold text-white">
+                            Net Banking
+                        </button>
+                        <button class="p-3 border-2 border-slate-800 bg-slate-950 rounded-lg text-center text-sm font-semibold text-slate-400 hover:border-slate-700 transition">
+                            Bank Transfer
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-blue-900/20 p-3 rounded-lg flex gap-3 text-xs text-blue-300 border border-blue-900/30">
+                    <i class="fas fa-circle-info mt-0.5"></i>
+                    <p>Funds will be held in an secure escrow account until all 5 bricks are sold.</p>
+                </div>
+
+                <button onclick="processPayment()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                    <span id="pay-btn-text">Confirm & Pay</span>
+                </button>
+                <button onclick="closeModal()" class="w-full text-slate-500 text-sm font-medium hover:text-slate-300 transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div id="successOverlay" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-slate-950 text-white text-center p-6">
+        <div class="absolute inset-0 bg-blue-600/10 animate-pulse"></div>
+        <div class="relative z-10">
+            <div class="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/20">
+                <i class="fas fa-check text-5xl"></i>
+            </div>
+            <h2 class="text-4xl font-bold mb-4">Investment Confirmed!</h2>
+            <p class="text-xl mb-8 text-slate-400">Welcome to Brick Share. You now own 20% of the property.</p>
+            <button onclick="location.reload()" class="bg-blue-600 text-white px-10 py-4 rounded-full font-bold hover:bg-blue-700 transition">Back to Marketplace</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-900 text-slate-500 py-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 items-start mb-12">
+                <!-- Branding -->
+                <div class="text-center md:text-left">
+                    <div class="flex justify-center md:justify-start items-center gap-2 mb-4">
+                        <div class="bg-blue-600 p-1.5 rounded text-white text-sm">
+                            <i class="fas fa-cubes-stacked"></i>
+                        </div>
+                        <span class="text-xl font-bold text-white">BrickShare</span>
+                    </div>
+                    <p class="text-sm max-w-xs mx-auto md:mx-0">Democratizing real estate investment through fractional ownership. Secure, transparent, and accessible.</p>
+                </div>
+
+                <!-- Customer Care -->
+                <div class="text-center md:text-left">
+                    <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-xs">Customer Care</h4>
+                    <div class="space-y-3">
+                        <a href="tel:+911800200300" class="flex items-center justify-center md:justify-start gap-3 hover:text-blue-400 transition">
+                            <i class="fas fa-phone-volume text-blue-500"></i>
+                            <span>+91 94825 49114 (Toll Free)</span>
+                        </a>
+                        <a href="mailto:support@brickshare.com" class="flex items-center justify-center md:justify-start gap-3 hover:text-blue-400 transition">
+                            <i class="fas fa-envelope text-blue-500"></i>
+                            <span>support@brickshare.com</span>
+                        </a>
+                        <div class="flex items-center justify-center md:justify-start gap-3">
+                            <i class="fas fa-clock text-slate-600 text-sm"></i>
+                            <span class="text-xs">Mon - Sat: 9:00 AM - 7:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legal/Social -->
+                <div class="text-center md:text-left">
+                    <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-xs">Compliance</h4>
+                    <p class="text-xs mb-4">REGISTERD OFFICE : East point college of engineering ,bengaluru-16 </p>
+                    <div class="flex justify-center md:justify-start gap-4">
+                        <a href="#" class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center hover:text-white transition"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-slate-900 text-center">
+                <p class="text-xs mb-2">© 2024 Brick Share Technologies. All rights reserved.</p>
+                <p class="text-[10px] max-w-2xl mx-auto opacity-60">Real estate investments are subject to market risks. All properties listed are RERA registered. Minimum investment per building is ₹25,00,000. Fractional ownership is governed by standard SPV legal structures in accordance with local regulations.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const properties = [
+            {
+                id: 1,
+                title: "Skyline Penthouse",
+                type: "apartment",
+                location: "Worli, Mumbai",
+                address: "Plot 23, Dr Annie Besant Rd, Worli, Mumbai, Maharashtra 400018",
+                price: "1.25 Cr",
+                brickPrice: "25 Lakhs",
+                slotsTaken: 2,
+                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+                description: "Ultra-luxury penthouse with panoramic sea views. High rental yields due to premium corporate demand in Worli."
+            },
+            {
+                id: 2,
+                title: "The Horizon Godown",
+                type: "commercial",
+                location: "Bhiwandi, Thane",
+                address: "Survey No 45, Mankoli Naka, Bhiwandi, Maharashtra 421302",
+                price: "1.50 Cr",
+                brickPrice: "30 Lakhs",
+                slotsTaken: 4,
+                image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
+                description: "Modern logistics hub with specialized temperature-controlled zones. Pre-leased to an e-commerce giant."
+            },
+            {
+                id: 3,
+                title: "Emerald Farm Plots",
+                type: "land",
+                location: "Karjat, Maharashtra",
+                address: "Emerald Green Farms, Salokh, Karjat, Maharashtra 410201",
+                price: "1.25 Cr",
+                brickPrice: "25 Lakhs",
+                slotsTaken: 1,
+                image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80",
+                description: "Rich fertile land in the foothills. Guaranteed capital appreciation and sustainable farming potential."
+            },
+            {
+                id: 4,
+                title: "Heritage Villa",
+                type: "home",
+                location: "Whitefield, Bangalore",
+                address: "EPIP Zone, Whitefield, Bengaluru, Karnataka 560066",
+                price: "2.50 Cr",
+                brickPrice: "50 Lakhs",
+                slotsTaken: 3,
+                image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80",
+                description: "A private gated community home. Ideal for high-end residential rental or long-term value holding."
+            },
+            {
+                id: 5,
+                title: "Tech-Park Godown",
+                type: "commercial",
+                location: "Okhla, New Delhi",
+                address: "Phase III, Okhla Industrial Estate, New Delhi, Delhi 110020",
+                price: "2.00 Cr",
+                brickPrice: "40 Lakhs",
+                slotsTaken: 0,
+                image: "https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=800&q=80",
+                description: "Strategically located storage unit in the heart of Delhi's industrial zone. Perfect for quick-commerce tenants."
+            },
+            {
+                id: 6,
+                title: "Azure Seafront Plot",
+                type: "land",
+                location: "Alibaug, Raigad",
+                address: "Varsoli Beach Rd, Alibaug, Maharashtra 402201",
+                price: "3.75 Cr",
+                brickPrice: "75 Lakhs",
+                slotsTaken: 2,
+                image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+                description: "Exclusive seafront plot in India's Hamptons. High-growth area with upcoming infrastructure projects."
+            }
+        ];
+
+        function renderProperties(list) {
+            const grid = document.getElementById('property-grid');
+            grid.innerHTML = list.map(prop => `
+                <div class="property-card bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition cursor-pointer" onclick="openDetails(${prop.id})">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="${prop.image}" alt="${prop.title}" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-slate-950/80 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-white uppercase tracking-wider border border-white/10">
+                            ${prop.type}
+                        </div>
+                        <div class="absolute bottom-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-lg text-sm font-bold shadow-lg">
+                            ₹${prop.brickPrice} / brick
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-white">${prop.title}</h3>
+                        <p class="text-slate-400 text-sm mb-4"><i class="fas fa-location-dot mr-1 text-blue-500"></i> ${prop.location}</p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-400">Ownership Slots</span>
+                                <span class="font-bold text-blue-400">${5 - prop.slotsTaken} available</span>
+                            </div>
+                            <div class="flex gap-1.5 h-1.5">
+                                ${Array(5).fill(0).map((_, i) => `
+                                    <div class="flex-1 rounded-full ${i < prop.slotsTaken ? 'bg-slate-700' : 'bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.4)]'}"></div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
+                            <span class="text-xs text-slate-500 uppercase font-bold tracking-tight">Minimum Investment</span>
+                            <span class="text-white font-bold">₹25L+</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProperties(type) {
+            const btns = document.querySelectorAll('.filter-btn');
+            btns.forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'active');
+                btn.classList.add('bg-slate-800', 'text-slate-400', 'border-slate-700');
+            });
+            event.currentTarget.classList.add('bg-blue-600', 'text-white', 'active');
+            event.currentTarget.classList.remove('bg-slate-800', 'text-slate-400', 'border-slate-700');
+            
+            const filtered = type === 'all' ? properties : properties.filter(p => p.type === type);
+            renderProperties(filtered);
+        }
+
+        function openDetails(id) {
+            const prop = properties.find(p => p.id === id);
+            const modal = document.getElementById('propertyModal');
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `
+                <div class="w-full md:w-1/2 h-80 md:h-auto">
+                    <img src="${prop.image}" class="w-full h-full object-cover">
+                </div>
+                <div class="w-full md:w-1/2 p-8 md:p-12 bg-slate-900">
+                    <span class="text-blue-500 font-bold uppercase tracking-widest text-xs">${prop.type}</span>
+                    <h2 class="text-3xl font-bold mt-2 mb-4 text-white">${prop.title}</h2>
+                    <p class="text-slate-400 leading-relaxed mb-6">${prop.description}</p>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800">
+                            <p class="text-xs text-slate-500 uppercase font-bold mb-1">Brick Price</p>
+                            <p class="text-xl font-bold text-white">₹${prop.brickPrice}</p>
+                        </div>
+                        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800">
+                            <p class="text-xs text-slate-500 uppercase font-bold mb-1">Total Value</p>
+                            <p class="text-xl font-bold text-white">₹${prop.price}</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-8 p-4 bg-slate-950/50 rounded-xl border border-slate-800">
+                        <h4 class="font-bold text-white mb-2 text-sm flex items-center gap-2">
+                            <i class="fas fa-location-dot text-blue-500"></i> Location Details
+                        </h4>
+                        <p class="text-slate-400 text-sm mb-4 leading-snug">${prop.address}</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(prop.address)}" 
+                           target="_blank"
+                           class="inline-flex items-center gap-2 text-blue-400 text-sm font-bold hover:text-blue-300 transition group">
+                            Open in Google Maps <i class="fas fa-external-link-alt text-xs group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+
+                    <button onclick="openPayment('${prop.title}', '${prop.brickPrice}')" 
+                            class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-900/20">
+                        Invest in 1 Brick
+                    </button>
+                    <p class="text-center text-xs text-slate-500 mt-4">Legal Limit: 5 Co-owners only</p>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('propertyModal').classList.add('hidden');
+            document.getElementById('paymentModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openPayment(name, amount) {
+            document.getElementById('pay-property-name').innerText = name;
+            document.getElementById('pay-amount').innerText = amount;
+            document.getElementById('paymentModal').classList.remove('hidden');
+        }
+
+        function processPayment() {
+            const btn = document.getElementById('pay-btn-text');
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Initializing Gateway...';
+            
+            setTimeout(() => {
+                document.getElementById('successOverlay').classList.remove('hidden');
+            }, 2000);
+        }
+
+        // Initialize
+        window.onload = () => renderProperties(properties);
+    </script>
+</body>
+</html>

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxShare | Fractional Luxury Car Ownership India</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+        .glass-morphism {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #fb7185, #db2777);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+        }
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 8px;
+        }
+        .calendar-day:hover:not(.disabled) {
+            background-color: #4c1d35;
+            transform: scale(1.1);
+        }
+        .calendar-day.selected {
+            background: #db2777;
+            color: white;
+            box-shadow: 0 4px 12px rgba(219, 39, 119, 0.4);
+        }
+        .calendar-day.disabled {
+            color: #475569;
+            cursor: not-allowed;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #db2777;
+            border-radius: 4px;
+        }
+        .car-image {
+            height: 250px;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .car-card:hover .car-image {
+            transform: scale(1.05);
+        }
+        .loader {
+            border: 3px solid #334155;
+            border-radius: 50%;
+            border-top: 3px solid #ffffff;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .dark-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+        }
+    </style>
+</head>
+<body class="text-slate-200">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-morphism">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center">
+                    <i class="fas fa-gem text-3xl mr-2 text-rose-500"></i>
+                    <span class="font-bold text-2xl tracking-tight text-white">Lux<span class="text-rose-500">Share</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="text-slate-300 hover:text-rose-500 font-medium transition">Home</a>
+                    <a href="#how-it-works" class="text-slate-300 hover:text-rose-500 font-medium transition">Tokenization</a>
+                    <a href="#fleet" class="text-slate-300 hover:text-rose-500 font-medium transition">The Fleet</a>
+                    <a href="#contact" class="px-6 py-2 rounded-full gradient-bg text-white font-bold shadow-lg hover:shadow-rose-500/30 transition transform hover:-translate-y-0.5">Join Waitlist</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-[#0a0f1d]">
+        <div class="absolute top-0 left-0 w-full h-full z-0 opacity-20 pointer-events-none">
+            <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Background Pattern" class="w-full h-full object-cover">
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight text-white">
+                Own Your <span class="gradient-text">Dream Car</span><br> For a Fraction of the Cost
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-400 mb-10 max-w-3xl mx-auto">
+                The smartest way to drive luxury in India. Buy 1/10th of a supercar via secure tokenization. Block your dates, drive, and sell your share whenever you want.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#fleet" class="px-8 py-4 rounded-full gradient-bg text-white text-lg font-bold shadow-lg hover:shadow-rose-500/40 transition transform hover:-translate-y-1">
+                    <i class="fas fa-car mr-2"></i> View Showroom
+                </a>
+                <a href="#how-it-works" class="px-8 py-4 rounded-full bg-slate-800 text-rose-400 border border-slate-700 text-lg font-bold shadow-sm hover:bg-slate-700 transition">
+                    <i class="fas fa-play-circle mr-2"></i> How it Works
+                </a>
+            </div>
+            
+            <!-- Stats -->
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="p-6 dark-card rounded-2xl shadow-xl border-b-4 border-rose-500">
+                    <div class="text-4xl font-bold text-white mb-2">₹10L+</div>
+                    <div class="text-slate-400 font-medium">Entry Price</div>
+                </div>
+                <div class="p-6 dark-card rounded-2xl shadow-xl border-b-4 border-purple-500">
+                    <div class="text-4xl font-bold text-white mb-2">10</div>
+                    <div class="text-slate-400 font-medium">Max Owners Per Car</div>
+                </div>
+                <div class="p-6 dark-card rounded-2xl shadow-xl border-b-4 border-orange-500">
+                    <div class="text-4xl font-bold text-white mb-2">35+</div>
+                    <div class="text-slate-400 font-medium">Days/Year Guaranteed</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-20 bg-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-base text-rose-500 font-semibold tracking-wide uppercase">The Future of Ownership</h2>
+                <p class="mt-2 text-4xl leading-8 font-extrabold tracking-tight text-white sm:text-5xl">
+                    What is Car Tokenization?
+                </p>
+                <p class="mt-4 max-w-2xl text-xl text-slate-400 mx-auto">
+                    We split the asset cost into 10 digital tokens. Buying 1 token grants you legal equity ownership and usage rights.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="relative p-8 bg-slate-800/50 rounded-3xl border border-slate-700 hover:border-purple-500/50 transition duration-300">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg">1</div>
+                    <i class="fas fa-coins text-5xl text-purple-400 mb-6"></i>
+                    <h3 class="text-2xl font-bold text-white mb-4">Buy a Token</h3>
+                    <p class="text-slate-400">Select a car like a Porsche 911. Instead of paying ₹2.5 Cr, buy 1 token for ₹25 Lakhs. You now own 10% of the car.</p>
+                </div>
+                <div class="relative p-8 bg-slate-800/50 rounded-3xl border border-slate-700 hover:border-rose-500/50 transition duration-300">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg">2</div>
+                    <i class="fas fa-calendar-check text-5xl text-rose-400 mb-6"></i>
+                    <h3 class="text-2xl font-bold text-white mb-4">Book Your Days</h3>
+                    <p class="text-slate-400">Use our smart app to block dates. Each token gives you roughly 36 days of usage per year. Fair rotation algorithms ensure holidays are shared.</p>
+                </div>
+                <div class="relative p-8 bg-slate-800/50 rounded-3xl border border-slate-700 hover:border-orange-500/50 transition duration-300">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg">3</div>
+                    <i class="fas fa-chart-line text-5xl text-orange-400 mb-6"></i>
+                    <h3 class="text-2xl font-bold text-white mb-4">Drive or Sell</h3>
+                    <p class="text-slate-400">Enjoy the drive. We handle maintenance, insurance, and storage. Asset appreciates? Sell your token on our marketplace.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fleet Section -->
+    <section id="fleet" class="py-20 bg-[#0f172a]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold text-white sm:text-5xl">
+                    Current <span class="text-rose-500">Listings</span>
+                </h2>
+                <p class="mt-4 text-xl text-slate-400">Curated for the Indian Roads. Only 10 Tokens per vehicle.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="car-grid">
+                <!-- JS Inject -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-slate-950 bg-opacity-90 transition-opacity" onclick="closeModal()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+            <div class="inline-block align-bottom bg-slate-900 border border-slate-700 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
+                <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl leading-6 font-bold text-white" id="modal-car-title">Booking Calendar</h3>
+                        <button type="button" onclick="closeModal()" class="text-slate-400 hover:text-white">
+                            <i class="fas fa-times text-2xl"></i>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <img id="modal-car-image" src="" alt="Car" class="w-full h-48 object-cover rounded-xl mb-4 shadow-md border border-slate-700">
+                            <div class="space-y-3">
+                                <div class="flex justify-between border-b border-slate-800 pb-2">
+                                    <span class="text-slate-400">Full Value</span>
+                                    <span class="font-bold text-white" id="modal-full-price"></span>
+                                </div>
+                                <div class="flex justify-between border-b border-slate-800 pb-2">
+                                    <span class="text-rose-400 font-bold">Token Price (10%)</span>
+                                    <span class="font-bold text-rose-500 text-xl" id="modal-token-price"></span>
+                                </div>
+                                <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg">
+                                    <span class="text-slate-300 text-sm">Available Tokens</span>
+                                    <span class="bg-emerald-500/10 text-emerald-400 text-xs font-bold px-2 py-1 rounded-full border border-emerald-500/20" id="modal-tokens-left"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <button onclick="changeMonth(-1)" class="p-2 hover:bg-slate-800 rounded-full text-white"><i class="fas fa-chevron-left"></i></button>
+                                <h4 class="font-bold text-lg text-white" id="currentMonthDisplay"></h4>
+                                <button onclick="changeMonth(1)" class="p-2 hover:bg-slate-800 rounded-full text-white"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            
+                            <div class="grid grid-cols-7 gap-1 text-center mb-2 text-xs font-bold text-slate-500 uppercase">
+                                <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                            </div>
+                            <div id="calendarGrid" class="grid grid-cols-7 gap-2 text-sm"></div>
+                            <div class="mt-4 flex justify-between items-center text-sm text-slate-400">
+                                <div class="flex items-center gap-2"><div class="w-3 h-3 bg-rose-600 rounded-sm"></div> Selected</div>
+                                <div class="flex items-center gap-2"><div class="w-3 h-3 bg-slate-700 rounded-sm"></div> Unavailable</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-800/50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-slate-700">
+                    <button type="button" onclick="initiatePayment()" class="w-full inline-flex justify-center rounded-lg shadow-sm px-6 py-3 gradient-bg text-base font-medium text-white hover:opacity-90 sm:ml-3 sm:w-auto sm:text-sm">
+                        Proceed to Payment
+                    </button>
+                    <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-lg border border-slate-600 px-4 py-2 bg-slate-700 text-white font-medium hover:bg-slate-600 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-slate-950 bg-opacity-90" onclick="closePaymentModal()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+
+            <div class="inline-block align-bottom bg-slate-900 border border-slate-700 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-slate-900 px-4 pt-5 pb-4 sm:p-6">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="text-xl leading-6 font-bold text-white">Secure Payment</h3>
+                        <button onclick="closePaymentModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
+                    </div>
+
+                    <div class="bg-slate-800 p-4 rounded-lg mb-6 border border-slate-700">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-slate-400 text-sm">Item</span>
+                            <span class="font-medium text-sm text-white" id="pay-car-name">Car Name</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-slate-400 text-sm">Booking Dates</span>
+                            <span class="font-medium text-sm text-white" id="pay-dates-count">0 Days</span>
+                        </div>
+                        <div class="border-t border-slate-700 my-2"></div>
+                        <div class="flex justify-between">
+                            <span class="font-bold text-slate-300">Total Payable</span>
+                            <span class="font-bold text-rose-500" id="pay-total"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-slate-400 mb-2">Payment Method</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button type="button" class="flex items-center justify-center px-4 py-2 border border-rose-600 bg-rose-500/10 text-rose-500 rounded-lg font-medium ring-1 ring-rose-500">
+                                <i class="far fa-credit-card mr-2"></i> Card
+                            </button>
+                            <button type="button" class="flex items-center justify-center px-4 py-2 border border-slate-700 text-slate-400 rounded-lg hover:bg-slate-800 transition">
+                                <i class="fab fa-google-pay mr-2"></i> UPI
+                            </button>
+                        </div>
+                    </div>
+
+                    <form onsubmit="event.preventDefault(); processPayment();" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 uppercase">Card Number</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="far fa-credit-card text-slate-500"></i>
+                                </div>
+                                <input type="text" class="bg-slate-800 border-slate-700 text-white focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 sm:text-sm rounded-md py-2 border" placeholder="0000 0000 0000 0000" required>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-1/2">
+                                <label class="block text-xs font-medium text-slate-400 uppercase">Expiry</label>
+                                <input type="text" class="bg-slate-800 border-slate-700 text-white focus:ring-rose-500 focus:border-rose-500 block w-full sm:text-sm rounded-md py-2 border px-3" placeholder="MM/YY" required>
+                            </div>
+                            <div class="w-1/2">
+                                <label class="block text-xs font-medium text-slate-400 uppercase">CVV</label>
+                                <input type="password" class="bg-slate-800 border-slate-700 text-white focus:ring-rose-500 focus:border-rose-500 block w-full sm:text-sm rounded-md py-2 border px-3" placeholder="123" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" id="payButton" class="w-full flex justify-center items-center py-3 px-4 rounded-lg shadow-sm text-sm font-medium text-white gradient-bg hover:opacity-90 transition transform active:scale-95 mt-6">
+                            <span>Pay Now</span>
+                        </button>
+                    </form>
+                    <div class="mt-4 text-center">
+                        <p class="text-xs text-slate-500"><i class="fas fa-lock mr-1"></i> 256-bit SSL Encrypted Payment</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-gem text-2xl mr-2 text-rose-500"></i>
+                        <span class="font-bold text-xl">LuxShare</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">Democratizing luxury car ownership in India through blockchain tokenization.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4 text-lg">Contact</h4>
+                    <p class="text-slate-400 text-sm"><i class="fas fa-map-marker-alt mr-2 text-rose-500"></i> EAST POINT COLLEGE OF ENGINEERING ,BENGALURU </p>
+                    <p class="text-slate-400 text-sm mt-2"><i class="fas fa-phone mr-2 text-rose-500"></i> +91 94825 49114</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4 text-lg">Newsletter</h4>
+                    <div class="flex">
+                        <input type="email" placeholder="Your email" class="px-4 py-2 rounded-l-lg w-full bg-slate-800 text-white border border-slate-700 focus:outline-none focus:border-rose-500">
+                        <button class="bg-rose-600 px-4 py-2 rounded-r-lg hover:bg-rose-700 transition">Join</button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-900 mt-10 pt-6 text-center text-slate-500 text-sm">
+                &copy; 2025 LuxShare India Pvt Ltd. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const cars = [
+            {
+                id: 1,
+                name: "KOENIGSEGG JESKO ATTACK",
+                type: "PETROL HYPER CAR",
+                price: 18000000,
+                image: "https://imgs.search.brave.com/4hd9086ghzdIRcxpYU0A50uLEC8PCjBBw96lm6sbGEw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDEyMTY1/NDgwLmpwZw",
+                tokensLeft: 3,
+                specs: "5.0L TWIN TURBO V12 | 1600 HP",
+                tags: ["ABSOLUTE TRACK MONSTER", "TRACK ONLY"]
+            },
+            {
+                id: 2,
+                name: "Porsche 911 GT3 RS",
+                type: "Sports Coupe",
+                price: 25000000,
+                image: "https://imgs.search.brave.com/GX6tgjITdTSE6AhH3hyQHwfH7oVy0OhS2Ds_ryIBAYQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jNC53/YWxscGFwZXJmbGFy/ZS5jb20vd2FsbHBh/cGVyLzc3Ny8xMDE0/LzM0OS9wb3JzY2hl/LTk5Mi1ndDMtcnMt/YXNzZXR0by1jb3Jz/YS1jYXItcGMtZ2Ft/aW5nLWhkLXdhbGxw/YXBlci1wcmV2aWV3/LmpwZw",
+                tokensLeft: 5,
+                specs: "3 LTR TWIN TURBO V6 | 600 HP",
+                tags: ["Performance", "Weekend"]
+            },
+            {
+                id: 3,
+                name: "Land Rover Defender",
+                type: "Luxury SUV",
+                price: 15000000,
+                image: "https://imgs.search.brave.com/uu6cC9G6iJR7fvs-I2i2MnfBZ0_lbpyPUmnVe47tUsU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdk/LWN0LmFlcGxjZG4u/Y29tLzY2NHg0MTUv/bi9jdy9lYy81NTIx/NS9kZWZlbmRlci1l/eHRlcmlvci1sZWZ0/LXNpZGUtdmlldy0y/LmpwZWc_aXNpZz0w/JnE9ODA",
+                tokensLeft: 2,
+                specs: "Off-road Capable | 5 Seater",
+                tags: ["Adventure", "Family"]
+            },
+            {
+                id: 4,
+                name: "MERCEDES AMG PROJECT ONE",
+                type: "HYPER CAR",
+                price: 17000000,
+                image: "https://imgs.search.brave.com/qvP9MUm_4jpF-H8xLkuPk4rsQie6LRSRsQGJYmvEozw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/ZXVyb3BlYW5wcmVz/dGlnZS5jby51ay9i/bG9icy9zdG9jay81/NzQvaW1hZ2VzLzll/ZTIwMzAzLTdhNmYt/NGQ4ZC1hZTA5LWVj/MmQ5ZTNkZmZkNi9o/aTRhMTk2NS5qcGc_/d2lkdGg9MjAwMCZo/ZWlnaHQ9MTMzMw",
+                tokensLeft: 7,
+                specs: "1.6 LTR TWIN TURBO V6 | 1100 HP",
+                tags: ["Tech", "F1 DERIVED"]
+            },
+            {
+                id: 5,
+                name: "Lamborghini Aventador SVJ",
+                type: "Supercar",
+                price: 45000000,
+                image: "https://imgs.search.brave.com/N8xtxH5RODkpKPPrBolrHaA8housCQtCusY5AJqhW84/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jNC53/YWxscGFwZXJmbGFy/ZS5jb20vd2FsbHBh/cGVyLzQ4OS80MDcv/NzQ4L2xhbWJvcmdo/aW5pLWxhbWJvcmdo/aW5pLWF2ZW50YWRv/ci1zdmotY2FyLWxh/bWJvcmdoaW5pLWF2/ZW50YWRvci1zcG9y/dC1jYXItaGQtd2Fs/bHBhcGVyLXByZXZp/ZXcuanBn",
+                tokensLeft: 1,
+                specs: "NA V12 Engine | 800 HP",
+                tags: ["Exotic", "Track"]
+            },
+            {
+                id: 6,
+                name: "Audi R8",
+                type: "Sport car",
+                price: 21000000,
+                image: "https://imgs.search.brave.com/FSwnUSP2hHHUcJgy7Kg5dHBx94fWeFihz4rAO0tkFnQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/d3N1cGVyY2Fycy5j/b20vdGh1bWJuYWls/cy9BdWRpLzIwMjMt/QXVkaS1SOC1Db3Vw/ZS1WMTAtR1QtUldE/LTAwNS5qcGc",
+                tokensLeft: 6,
+                specs: "4LTR TWIN TURBO V8 | 650 HP",
+                tags: ["exotic", "Speed"]
+            }
+        ];
+
+        const formatINR = (amount) => "₹" + amount.toLocaleString('en-IN');
+        const formatLakhs = (amount) => "₹" + (amount / 100000).toFixed(2) + " Lakhs";
+
+        const carGrid = document.getElementById('car-grid');
+        cars.forEach(car => {
+            const tokenPrice = car.price / 10;
+            const card = document.createElement('div');
+            card.className = "car-card bg-slate-800 rounded-2xl shadow-lg overflow-hidden hover:shadow-rose-500/10 transition duration-300 border border-slate-700";
+            card.innerHTML = `
+                <div class="relative">
+                    <img src="${car.image}" alt="${car.name}" class="car-image">
+                    <div class="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-rose-400 border border-slate-700">
+                        ${car.tokensLeft} Tokens Left
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="text-xs font-semibold text-rose-500 uppercase tracking-wider">${car.type}</span>
+                            <h3 class="text-xl font-bold text-white">${car.name}</h3>
+                        </div>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4"><i class="fas fa-cogs mr-1"></i> ${car.specs}</p>
+                    
+                    <div class="bg-slate-900/50 rounded-xl p-4 mb-6 border border-slate-700">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm text-slate-500">Full Price</span>
+                            <span class="text-sm font-medium text-slate-600 line-through">${formatINR(car.price)}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300 font-bold">Your Token (10%)</span>
+                            <span class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-purple-500">${formatLakhs(tokenPrice)}</span>
+                        </div>
+                    </div>
+
+                    <button onclick="openBooking(${car.id})" class="w-full py-3 rounded-lg gradient-bg text-white font-bold shadow-md hover:opacity-95 transition active:scale-95 flex justify-center items-center group">
+                        <span>Book Ownership</span>
+                        <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition"></i>
+                    </button>
+                </div>
+            `;
+            carGrid.appendChild(card);
+        });
+
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let selectedDates = new Set();
+        let activeCar = null;
+
+        function openBooking(carId) {
+            activeCar = cars.find(c => c.id === carId);
+            document.getElementById('modal-car-title').innerText = `Block Dates: ${activeCar.name}`;
+            document.getElementById('modal-car-image').src = activeCar.image;
+            document.getElementById('modal-full-price').innerText = formatINR(activeCar.price);
+            document.getElementById('modal-token-price').innerText = formatLakhs(activeCar.price / 10);
+            document.getElementById('modal-tokens-left').innerText = `${activeCar.tokensLeft}/10 Available`;
+            selectedDates.clear();
+            renderCalendar(currentMonth, currentYear);
+            document.getElementById('bookingModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('bookingModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function renderCalendar(month, year) {
+            const grid = document.getElementById('calendarGrid');
+            const display = document.getElementById('currentMonthDisplay');
+            grid.innerHTML = "";
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            display.innerText = `${months[month]} ${year}`;
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            for(let i=0; i<firstDay; i++) grid.appendChild(document.createElement('div'));
+            for(let d=1; d<=daysInMonth; d++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = "calendar-day text-slate-300 font-medium text-sm bg-slate-800/50";
+                dayEl.innerText = d;
+                const checkDate = new Date(year, month, d);
+                if(checkDate < new Date(new Date().setHours(0,0,0,0))) {
+                    dayEl.classList.add('disabled');
+                } else {
+                    if(d % 7 === 0 || d % 8 === 0) {
+                        dayEl.classList.add('bg-slate-700', 'text-slate-500', 'cursor-not-allowed');
+                    } else {
+                        dayEl.onclick = () => {
+                            const dateKey = `${year}-${month}-${d}`;
+                            if(selectedDates.has(dateKey)) {
+                                selectedDates.delete(dateKey);
+                                dayEl.classList.remove('selected');
+                            } else {
+                                selectedDates.add(dateKey);
+                                dayEl.classList.add('selected');
+                            }
+                        };
+                        if(selectedDates.has(`${year}-${month}-${d}`)) dayEl.classList.add('selected');
+                    }
+                }
+                grid.appendChild(dayEl);
+            }
+        }
+
+        function changeMonth(offset) {
+            currentMonth += offset;
+            if(currentMonth > 11) { currentMonth = 0; currentYear++; }
+            else if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar(currentMonth, currentYear);
+        }
+
+        function initiatePayment() {
+            if(selectedDates.size === 0) {
+                const msg = document.createElement('div');
+                msg.className = "fixed top-20 left-1/2 -translate-x-1/2 bg-rose-600 text-white px-6 py-3 rounded-full shadow-2xl z-[100] font-bold";
+                msg.innerText = "Please select at least one date";
+                document.body.appendChild(msg);
+                setTimeout(() => msg.remove(), 2000);
+                return;
+            }
+            closeModal();
+            const cost = activeCar.price / 10;
+            document.getElementById('pay-car-name').innerText = activeCar.name;
+            document.getElementById('pay-total').innerText = formatLakhs(cost);
+            document.getElementById('pay-dates-count').innerText = `${selectedDates.size} Days Blocked`;
+            document.getElementById('paymentModal').classList.remove('hidden');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function processPayment() {
+            const btn = document.getElementById('payButton');
+            btn.innerHTML = `<div class="loader"></div>`;
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.innerHTML = "Success!";
+                const successDiv = document.createElement('div');
+                successDiv.className = "fixed inset-0 flex items-center justify-center z-[100] bg-slate-950/90 p-4";
+                successDiv.innerHTML = `
+                    <div class="bg-slate-900 border border-rose-500 p-8 rounded-3xl text-center max-w-sm w-full shadow-2xl">
+                        <i class="fas fa-check-circle text-6xl text-emerald-500 mb-4"></i>
+                        <h2 class="text-2xl font-bold text-white mb-2">Payment Received</h2>
+                        <p class="text-slate-400 mb-6">Welcome to the LuxShare owner's club. You now own 10% of the ${activeCar.name}.</p>
+                        <button onclick="location.reload()" class="w-full py-3 gradient-bg text-white rounded-xl font-bold">Back to Dashboard</button>
+                    </div>
+                `;
+                document.body.appendChild(successDiv);
+            }, 2000);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") { closeModal(); closePaymentModal(); }
+        });
+    </script>
+</body>
+</html>

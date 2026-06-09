@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Rentals — Premium Cars & Exotic Homes in India</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #11111a;
+    --card: #161622;
+    --border: #2a2a3d;
+    --gold: #c9a84c;
+    --gold-light: #e8c97d;
+    --text: #e8e8f0;
+    --muted: #7a7a99;
+    --accent: #3a7bd5;
+    --red: #e05555;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 1000;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 72px;
+  }
+
+  .logo {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+  }
+
+  .logo span {
+    display: block;
+    font-size: 0.45rem;
+    letter-spacing: 8px;
+    font-weight: 400;
+    opacity: 0.7;
+    margin-top: -4px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .nav-links {
+    display: flex; gap: 2.5rem; list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: color 0.3s;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--gold);
+    transition: width 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--gold-light); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .nav-cta {
+    background: linear-gradient(135deg, var(--gold), #a8762e);
+    color: #0a0a0f !important;
+    padding: 10px 22px;
+    border-radius: 4px;
+    font-weight: 700 !important;
+    letter-spacing: 1px !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+  }
+
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.35); }
+  .nav-cta::after { display: none !important; }
+
+  /* HERO */
+  .hero {
+    height: 100vh;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(58,123,213,0.07) 0%, transparent 50%),
+      linear-gradient(180deg, #0a0a0f 0%, #0d0d1a 100%);
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 900px; padding: 0 20px;
+    animation: fadeUp 1s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.4);
+    padding: 8px 20px;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+  }
+
+  .hero h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 .gold { color: var(--gold); }
+
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 600px; margin: 0 auto 2.5rem;
+    font-weight: 300;
+  }
+
+  .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), #a8762e);
+    color: #0a0a0f;
+    padding: 15px 36px;
+    border: none; border-radius: 4px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(201,168,76,0.4); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    padding: 15px 36px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-stats {
+    position: absolute; bottom: 50px; width: 100%;
+    display: flex; justify-content: center; gap: 4rem; z-index: 2;
+  }
+
+  .hero-content {
+    margin-bottom: 160px;
+  }
+
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: 700; color: var(--gold); }
+  .stat-label { font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+
+  /* SECTIONS */
+  section { padding: 100px 5%; }
+
+  .section-header { text-align: center; margin-bottom: 4rem; }
+
+  .section-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .section-header h2 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .section-header p {
+    color: var(--muted);
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: 300;
+    max-width: 550px; margin-left: auto; margin-right: auto;
+    margin-top: 1rem;
+  }
+
+  /* FILTER TABS */
+  .filter-tabs {
+    display: flex; justify-content: center; gap: 0.5rem;
+    margin-bottom: 3rem; flex-wrap: wrap;
+  }
+
+  .filter-tab {
+    padding: 10px 24px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 100px;
+    transition: all 0.2s;
+    font-weight: 600;
+  }
+
+  .filter-tab.active, .filter-tab:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.08);
+  }
+
+  /* CARDS GRID */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 2rem;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+  }
+
+  .card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(201,168,76,0.4);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .card-img {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+  }
+
+  .card-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+
+  .card:hover .card-img img { transform: scale(1.07); }
+
+  .card-badge {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(10,10,15,0.85);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-weight: 700;
+  }
+
+  .card-fav {
+    position: absolute; top: 12px; right: 12px;
+    width: 34px; height: 34px;
+    background: rgba(10,10,15,0.7);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s;
+    font-size: 0.9rem;
+  }
+
+  .card-fav:hover { border-color: var(--red); background: rgba(224,85,85,0.15); }
+  .card-fav.liked { border-color: var(--red); color: var(--red); }
+
+  .card-body { padding: 1.4rem; }
+
+  .card-location {
+    font-size: 0.72rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-desc {
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-weight: 300;
+  }
+
+  .card-specs {
+    display: flex; gap: 1rem; margin-bottom: 1.2rem; flex-wrap: wrap;
+  }
+
+  .spec-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.78rem; color: var(--muted);
+    font-weight: 500;
+  }
+
+  .spec-item span:first-child { font-size: 0.9rem; }
+
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-price .amount {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .card-price .period {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-weight: 400;
+    margin-left: 4px;
+  }
+
+  .card-price .per-day {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: block;
+  }
+
+  .btn-book {
+    background: linear-gradient(135deg, var(--gold), #a8762e);
+    color: #0a0a0f;
+    padding: 10px 20px;
+    border: none; border-radius: 6px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn-book:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201,168,76,0.4); }
+
+  .map-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: color 0.2s;
+    margin-top: 0.5rem;
+  }
+
+  .map-link:hover { color: var(--gold); }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0 5%;
+  }
+
+  /* PAYMENT MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .modal-header {
+    padding: 1.8rem 2rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .modal-header h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .modal-close {
+    background: none; border: 1px solid var(--border);
+    color: var(--muted);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover { border-color: var(--red); color: var(--red); }
+
+  .modal-body { padding: 1.8rem 2rem; }
+
+  .booking-summary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .booking-summary h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+  }
+
+  .summary-row {
+    display: flex; justify-content: space-between;
+    font-size: 0.85rem;
+    padding: 0.35rem 0;
+    color: var(--muted);
+  }
+
+  .summary-row.total {
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem; padding-top: 0.8rem;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .summary-row .val { color: var(--text); font-weight: 500; }
+  .summary-row.total .val { color: var(--gold); font-family: 'Cinzel', serif; font-size: 1.1rem; }
+
+  .form-group { margin-bottom: 1.2rem; }
+
+  .form-group label {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-group input, .form-group select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
+  .form-group select { appearance: none; cursor: pointer; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .card-input-wrap {
+    position: relative;
+  }
+
+  .card-input-wrap input { padding-right: 50px; }
+
+  .card-icon {
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 1.2rem; opacity: 0.5;
+  }
+
+  .payment-methods {
+    display: flex; gap: 0.7rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+  }
+
+  .pay-method {
+    flex: 1; min-width: 100px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--muted);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  .pay-method.active { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.08); }
+  .pay-method:hover { border-color: var(--gold); color: var(--gold); }
+
+  .upi-input { display: none; }
+  .upi-input.show { display: block; }
+
+  .btn-pay {
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), #a8762e);
+    color: #0a0a0f;
+    padding: 16px;
+    border: none; border-radius: 8px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 0.5rem;
+  }
+
+  .btn-pay:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(201,168,76,0.4); }
+
+  .secure-note {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 1rem;
+    letter-spacing: 1px;
+  }
+
+  /* DATE PICKER SECTION */
+  .date-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem; }
+
+  /* SUCCESS SCREEN */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .success-screen.show { display: block; }
+  .success-icon { font-size: 4rem; margin-bottom: 1rem; }
+
+  .success-screen h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: #4caf82;
+    margin-bottom: 0.5rem;
+  }
+
+  .success-screen p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+
+  .booking-id {
+    background: var(--surface);
+    border: 1px solid #4caf82;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1.2rem 0;
+    font-family: 'Cinzel', serif;
+    color: #4caf82;
+    letter-spacing: 2px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 60px 5% 30px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .footer-brand .logo { font-size: 1.2rem; display: inline-block; margin-bottom: 1rem; }
+
+  .footer-brand p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.8;
+    font-weight: 300;
+    max-width: 280px;
+  }
+
+  .footer-col h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.7rem; }
+  .footer-col ul li a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+  .footer-col ul li a:hover { color: var(--gold-light); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+    font-size: 0.8rem; color: var(--muted);
+  }
+
+  /* TESTIMONIAL */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .testimonial {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.8rem;
+  }
+
+  .stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 3px; }
+
+  .testimonial p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    font-style: italic;
+    margin-bottom: 1.2rem;
+    font-weight: 300;
+  }
+
+  .testimonial-author {
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+
+  .author-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #a8762e);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #0a0a0f;
+  }
+
+  .author-info strong { display: block; font-size: 0.88rem; font-weight: 700; }
+  .author-info span { font-size: 0.75rem; color: var(--muted); }
+
+  /* ANIMATIONS */
+  .fade-in {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero-stats { gap: 2rem; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .date-row { grid-template-columns: 1fr; }
+  }
+
+  /* HOMES SECTION BG */
+  #homes { background: linear-gradient(180deg, var(--bg) 0%, rgba(58,123,213,0.03) 50%, var(--bg) 100%); }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <a href="#" class="logo">
+    Daily Rentals
+    <span>Premium Experiences · India</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#cars">Cars</a></li>
+    <li><a href="#homes">Homes</a></li>
+    <li><a href="#destinations">Destinations</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#cars" class="nav-cta">Book Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">India's Premier Luxury Rental Platform</div>
+    <h1>Explore India<br>in <span class="gold">Absolute Style</span></h1>
+    <p>Luxury cars and exotic homes at India's most breathtaking destinations. Every journey, a masterpiece.</p>
+    <div class="hero-btns">
+      <a href="#cars" class="btn-gold">Explore Cars</a>
+      <a href="#homes" class="btn-outline">Discover Homes</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">200+</div>
+      <div class="stat-label">Exotic Cars</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">150+</div>
+      <div class="stat-label">Luxury Homes</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">18</div>
+      <div class="stat-label">Destinations</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4.9★</div>
+      <div class="stat-label">Avg Rating</div>
+    </div>
+  </div>
+</section>
+
+<!-- CARS SECTION -->
+<section id="cars">
+  <div class="section-header fade-in">
+    <div class="section-tag">✦ Premium Fleet</div>
+    <h2>Exotic Car Rentals</h2>
+    <p>Drive the finest machines across India's iconic roads — from mountain highways to coastal expressways.</p>
+  </div>
+
+  <div class="filter-tabs fade-in">
+    <button class="filter-tab active" onclick="filterCars('all', this)">All Cars</button>
+    <button class="filter-tab" onclick="filterCars('sports', this)">Sports</button>
+    <button class="filter-tab" onclick="filterCars('suv', this)">SUV</button>
+    <button class="filter-tab" onclick="filterCars('luxury', this)">Luxury</button>
+    <button class="filter-tab" onclick="filterCars('convertible', this)">Convertible</button>
+  </div>
+
+  <div class="cards-grid" id="carsGrid">
+
+    <!-- Car 1 -->
+    <div class="card fade-in" data-category="sports">
+      <div class="card-img">
+        <img src="https://imgs.search.brave.com/bSSCaPDUQLg_JmsBog0a6Pa_O94sG7XzcuUWyttAck8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bGFtYm9jYXJzLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/MS8wMi8yMDE5LUxh/bWJvcmdoaW5pLUh1/cmFjYW4tRXZvLTAw/MS0xMDgwLmpwZw" alt="Lamborghini Huracan">
+        <div class="card-badge">Sports</div>
+        <div class="card-fav" onclick="toggleFav(this)">♡</div>
+      </div>
+      <div class="card-body">
+        <div class="card-location">📍 BENGALURU</div>
+        <div class="card-title">Lamborghini Huracán EVO</div>
+        <div class="card-desc">Tear through Bengaluru's night roads . 640 HP of pure exhilaration.</div>
+        <div class="card-specs">
+          <div class="spec-item"><span></span> 640 HP</div>
+          <div class="spec-item"><span></span> 0–100 in 2.9s</div>
+          <div class="spec-item"><span></span> Petrol</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">
+            <div class="amount">₹45,000 <span class="period">/day</span></div>
+            <div class="per-day">+ ₹20,000 insurance</div>
+          </div>
+          <button class="btn-book" onclick="openPayment('Lamborghini Huracán EVO', 45000, 'Car', 'Goa')">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Car 2 -->
+    <div class="card fade-in" data-category="luxury">
+      <div class="card-img">
+        <img src="https://imgs.search.brave.com/zWW2yNWo3PBO4VqmleEnUKjeKi1tdhpel_XmwGp53dQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMtY2RuLmNhcnMy/NC5jb20vcHJvZC9u/ZXctY2FyLWNtcy9S/b2xscy1Sb3ljZS9H/aG9zdC8yMDI0LzA2/LzExLzk0ZGYwYmI3/LTBlMWUtNDY4OC1h/NjY2LWQyYzRiNTll/OGUwZS1Sb2xscy1S/b3ljZV9HaG9zdF9F/eHRlcmlvcnNfNC5q/cGc_dz01NTcmZHBy/PTMmb3B0aW1pemU9/bG93JmZvcm1hdD1h/dXRvJnF1YWxpdHk9/NTA" alt="Rolls Royce Ghost">
+        <div class="card-badge">Luxury</div>
+        <div class="card-fav" onclick="toggleFav(this)">♡</div>
+      </div>
+      <div class="card-body">
+        <div class="card-location">📍 Bengaluru</div>
+        <div class="card-title">Rolls-Royce Ghost</div>
+        <div class="card-desc"> Perfect for Bengaluru's elite events and airport transfers.</div>
+        <div class="card-specs">
+          <div class="spec-item"><span></span> 563 HP</div>
+          <div class="spec-item"><span></span> 4 Seats</div>
+          <div class="spec-item"><span></span> Whisper Quiet</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">
+            <div class="amount">₹65,000 <span class="period">/day</span></div>
+            <div class="per-day">+ chauffeur optional</div>
+          </div>
+          <button class="btn-book" onclick="openPayment('Rolls-Royce Ghost', 65000, 'Car', 'Mumbai')">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Car 3 -->
+    <div class="card fade-in" data-category="suv">
+      <div class="card-img">
+        <img src="https://imgs.search.brave.com/J2AJzxguVZzi9XcdB5dyTbqUrbrzWI5fdT3x0jJSEoI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jb250/ZW50LmNhcmxlbG8u/Y29tL21lZGlhL21v/ZGVscy82OC9pbnRl/cmlvci9yYW5nZS1y/b3Zlci0yLndlYnA" alt="Range Rover Sport">
+        <div class="card-badge">SUV</div>
+        <div class="card-fav" onclick="toggleFav(this)">♡</div>
+      </div>
+      <div class="card-body">
+        <div class="card-location">📍 Bengaluru </div>
+        <div class="card-title">Range Rover Sport SVR</div>
+        <div class="card-desc">perfect for daily commutes in Bengaluru .</div>
+        <div class="card-specs">
+          <div class="spec-item"><span></span> 575 HP</div>
+          <div class="spec-item"><span></span> 4WD</div>
+          <div class="spec-item"><span></span> All-terrain</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">
+            <div class="amount">₹22,000 <span class="period">/day</span></div>
+            <div class="per-day">+ ₹10,500 insurance</div>
+          </div>
+          <button class="btn-book" onclick="openPayment('Range Rover Sport SVR', 22000, 'Car', 'Manali')">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Car 4 -->
+    <div class="card fade-in" data-category="sports">
+      <div class="card-img">
+        <img src="https://imgs.search.brave.com/2lV6GbTvBBSWDPJYdISbX42xR_I5k5HLjbgL5yk9QKo/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzEzLzc5LzE2LzAy/LzM2MF9GXzEzNzkx/NjAyNTBfN3dneVM3/UUxKQ2VYc0l3ampN/ZzlFdmV2M1E3clRh/OHUuanBn" alt="Ferrari 488">
+        <div class="card-badge">Sports</div>
+        <div class="card-fav" onclick="toggleFav(this)">♡</div>
+      </div>
+      <div class="card-body">
+        <div class="card-location">📍 Bengaluru</div>
+        <div class="card-title">Ferrari 488 GTB</div>
+        <div class="card-desc">The prancing horse at its finest. Perfect for Bangalore's tech elite and raceway circuits.</div>
+        <div class="card-specs">
+          <div class="spec-item"><span></span> 670 HP</div>
+          <div class="spec-item"><span></span> 0–100 in 3.0s</div>
+          <div class="spec-item"><span></span>  Twin-turbo V8</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">
+            <div class="amount">₹38,000 <span class="period">/day</span></div>
+            <div class="per-day">+ ₹20,500 insurance</div>
+          </div>
+          <button class="btn-book" onclick="openPayment('Ferrari 488 GTB', 38000, 'Car', 'Bangalore')">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Car 5 -->
+    <div class="card fade-in" data-category="convertible">
+      <div class="card-img">
+        <img src="https://imgs.search.brave.com/GX6tgjITdTSE6AhH3hyQHwfH7oVy0OhS2Ds_ryIBAYQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jNC53/YWxscGFwZXJmbGFy/ZS5jb20vd2FsbHBh/cGVyLzc3Ny8xMDE0/LzM0OS9wb3JzY2hl/LTk5Mi1ndDMtcnMt/YXNzZXR0by1jb3Jz/YS1jYXItcGMtZ2Ft/aW5nLWhkLXdhbGxw/YXBlci1wcmV2aWV3/LmpwZw" alt="Porsche 911">
+        <div class="card-badge">Convertible</div>
+        <div class="card-fav" onclick="toggleFav(this)">♡</div>
+      </div>
+      <div class="card-body">
+        <div class="card-location">📍 Bengaluru </div>
+        <div class="card-title">Porsche 911 GT3RS</div>
+        <div class="card-desc">perfect for Bengaluru's night rides and pub life .</div>
+        <div class="card-specs">
+          <div class="spec-item"><span></span> 500 HP</div>
+          <div class="spec-item"><span></span> PERTROL</div>
+          <div class="spec-item"><span></span> 3 LTR TWIN TURBO V6</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">
+            <div class="amount">₹28,000 <span class="period">/day</span></div>
+            <div class="per-day">+ ₹10,000 insurance</div>
+          </div>
+          <button class="btn-book" onclick="openPayment('Porsche 911 Cabriolet', 28000, 'Car', 'Goa')">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Car 6 -->
+    <div class="card fade-in" data-category="luxury">
+      <div class="card-img">
+        <img src="https://imgs.search.brave.com/VH_abBVbmZ_LwG4Fmh1dSA882rcysPf-qp5Jqqs8Ugg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9oaXBz/LmhlYXJzdGFwcHMu/Y29tL2htZy1wcm9k/L2ltYWdlcy8yMmMw/MDYyLTAwMS1zb3Vy/Y2UtMTY0OTE4Nzcy/OC5qcGc_Y3JvcD0w/Ljg5Nnh3OjAuODk2/eGg7MC4wNTI5eHcs/MC4wNDQ5eGgmcmVz/aXplPTM2MDoq" alt="Mercedes S-Class">
+        <div class="card-badge">Luxury</div>
+        <div class="card-fav" onclick="toggleFav(this)">♡</div>
+      </div>
+      <div class="card-body">
+        <div class="card-location">📍 Bengaluru</div>
+        <div class="card-title">Mercedes-Maybach S680</div>
+        <div class="card-desc">The most luxurious way to navigate through Bengaluru . Perfect for diplomatic and corporate events.</div>
+        <div class="card-specs">
+          <div class="spec-item"><span></span> 621 HP</div>
+          <div class="spec-item"><span></span> Rear Executive</div>
+          <div class="spec-item"><span></span> Starlight Roof</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">
+            <div class="amount">₹55,000 <span class="period">/day</span></div>
+            <div class="per-day">chauffeur included</div>
+          </div>
+          <button class="btn-book" onclick="openPayment('Mercedes-Maybach S680', 55000, 'Car', 'Delhi')">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOMES SECTION -->
+<section id="homes">
+  <div class="section-header fade-in">
+    <div class="section-tag">✦ Exotic Stays</div>
+    <h2>Luxury Home Rentals</h2>
+    <p>Wake up to India's most magnificent views. From Himalayan retreats to beachfront villas.</p>
+  </div>
+
+  <div class="filter-tabs fade-in">
+    <button class="filter-tab active" onclick="filterHomes('all', this)">All Homes</button>
+    <button class="filter-tab" onclick="filterHomes('villa', this)">Villas</button>
+    <button class="filter-tab" onclick="filterHomes('palace', this)">Palaces</button>
+    <button class="filter-tab" onclick="filterHomes('retreat', this)">Retreats</button>
+    <button class="filter-tab" onclick="filterHomes('treehouse', this)">Treehouses</button>
+  </div>
+
+  <div class="cards-grid" id="homesGrid">
+
+    <!-- Home 1 -->
+    <div class="card fade-in" data-category="villa">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=600&q=80" alt="Goa Beach Villa">
+        <div class="card-badge">Villa</div>
+        <div class="card-fav" onclick="toggleFav(this)">♡</div>
+      </div>
+      <div class="card-body">
+        <div class="card-location">📍 North Goa, Calangute Beach</div>
+        <div class="card-title">Casa del Mare — Beachfront Villa</div>
+        <div class="card-desc">Private 5-bedroom villa with direct beach access, infinity pool, and panoramic Arabian Sea views.</div>
+        <div class="card-specs">
+          <div class="spec-item"><span>🛏️</span> 5 Bedrooms</div>
+          <div class="spec-item"><span>🏊</span> Infinity Pool</div>
+          <div class="spec-item"><span>🌊</span> Beachfront</div>
+        </div>
+        <a href="https://maps.google.com/?q=Calangute+Beach+Goa" target="_blank" class="map-link">🗺️ View on Google Maps</a>
+        <div class="card-footer">
+          <div class="card-price">
+            <div class="amount">₹35,000 <span class="period">/night</span></div>
+            <div class="per-day">max 10 guests</div>
+          </div>
+          <button class="btn-book" onclick="openPayment('Casa del Mare Beachfront Villa', 35000, 'Home', 'Goa')">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Home 2 -->
+    <div class="card fade-in" data-category="palace">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=600&q=80" alt="Rajasthan Palace">
+        <div class="card-badge">Palace</div>
+        <div class="card-fav" onclick="toggleFav(this)">♡</div>
+      </div>
+      <div class="card-body">
+        <div class="card-location">📍 Udaipur, Rajasthan</div>
+        <div class="card-title">Haveli Mewar — Lake Palace Suite</div>
+        <div class="card-desc">A royal 18th-century haveli overlooking Lake Pichola. Experience true Rajputana grandeur.</div>
+        <div class="card-specs">
+          <div class="spec-item"><span>🛏️</span> 8 Bedrooms</div>
+          <div class="spec-item"><span>👑</span> Royal Décor</div>
+          <div class="spec-item"><span>🏰</span> Lake Views</div>
+        </div>
+        <a href="https://maps.google.com/?q=Lake+Pichola+Udaipur+Rajasthan" target="_blank" class="map-link">🗺️ View on Google Maps</a>
+        <div class="card-footer">
+          <div class="card-price">
+            <div class="amount">₹75,000 <span class="period">/night</span></div>
+            <div class="per-day">butler included</div>
+          </div>
+          <button class="btn-book" onclick="openPayment('Haveli Mewar Lake Palace', 75000, 'Home', 'Udaipur')">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Home 3 -->
+    <div class="card fade-in" data-category="retreat">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Manali Mountain Retreat">
+        <div class="card-badge">Retreat</div>
+        <div class="card-fav" onclick="toggleFav(this)">♡</div>
+      </div>
+      <div class="card-body">
+        <div class="card-location">📍 Old Manali, Himachal Pradesh</div>
+        <div class="card-title">Himalayan Crest Retreat</div>
+        <div class="card-desc">Perched at 2,050m, this stone & pine chalet offers unobstructed Himalayan peak views and cedar-wood interiors.</div>
+        <div class="card-specs">
+          <div class="spec-item"><span>🛏️</span> 4 Bedrooms</div>
+          <div class="spec-item"><span>🔥</span> Fireplace</div>
+          <div class="spec-item"><span>🏔️</span> Mountain View</div>
+        </div>
+        <a href="https://maps.google.com/?q=Old+Manali+Himachal+Pradesh" target="_blank" class="map-link">🗺️ View on Google Maps</a>
+        <div class="card-footer">
+          <div class="card-price">
+            <div class="amount">₹18,000 <span class="period">/night</span></div>
+            <div class="per-day">max 8 guests</div>
+          </div>
+          <button class="btn-book" onclick="openPayment('Himalayan Crest Retreat', 18000, 'Home', 'Manali')">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Home 4 -->
+    <div class="card fade-in" data-category="treehouse">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=600&q=80" alt="Kerala Treehouse">
+        <div class="card-badge">Treehouse</div>
+        <div class="card-fav" onclick="toggleFav(this)">♡</div>
+      </div>
+      <div class="card-body">
+        <div class="card-location">📍 Thekkady, Kerala</div>
+        <div class="card-title">Spice Garden Treehouse</div>
+        <div class="card-desc">A magical bamboo treehouse nestled among Kerala's spice plantations. Wake up to birdsong and mist.</div>
+        <div class="card-specs">
+          <div class="spec-item"><span>🛏️</span> 2 Bedrooms</div>
+          <div class="spec-item"><span>🌿</span> Eco-luxury</div>
+          <div class="spec-item"><span>🦜</span> Wildlife nearby</div>
+        </div>
+        <a href="https://maps.google.com/?q=Thekkady+Kerala" target="_blank" class="map-link">🗺️ View on Google Maps</a>
+        <div class="card-footer">
+          <div class="card-price">
+            <div class="amount">₹12,000 <span class="period">/night</span></div>
+            <div class="per-day">max 4 guests</div>
+          </div>
+          <button class="btn-book" onclick="openPayment('Spice Garden Treehouse', 12000, 'Home', 'Kerala')">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Home 5 -->
+    <div class="card fade-in" data-category="villa">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=80" alt="Andaman Villa">
+        <div class="card-badge">Villa</div>
+        <div class="card-fav" onclick="toggleFav(this)">♡</div>
+      </div>
+      <div class="card-body">
+        <div class="card-location">📍 Havelock Island, Andaman</div>
+        <div class="card-title">Radhanagar Pearl Villa</div>
+        <div class="card-desc">Steps from Asia's best beach, this private villa offers turquoise water views and a private jacuzzi.</div>
+        <div class="card-specs">
+          <div class="spec-item"><span>🛏️</span> 3 Bedrooms</div>
+          <div class="spec-item"><span>🛁</span> Private Jacuzzi</div>
+          <div class="spec-item"><span>🐠</span> Snorkeling</div>
+        </div>
+        <a href="https://maps.google.com/?q=Radhanagar+Beach+Havelock+Island+Andaman" target="_blank" class="map-link">🗺️ View on Google Maps</a>
+        <div class="card-footer">
+          <div class="card-price">
+            <div class="amount">₹28,000 <span class="period">/night</span></div>
+            <div class="per-day">max 6 guests</div>
+          </div>
+          <button class="btn-book" onclick="openPayment('Radhanagar Pearl Villa', 28000, 'Home', 'Andaman')">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Home 6 -->
+    <div class="card fade-in" data-category="palace">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1561501900-3701fa6a0864?w=600&q=80" alt="Jaipur Mansion">
+        <div class="card-badge">Palace</div>
+        <div class="card-fav" onclick="toggleFav(this)">♡</div>
+      </div>
+      <div class="card-body">
+        <div class="card-location">📍 Civil Lines, Jaipur</div>
+        <div class="card-title">Shahi Niwas Heritage Mansion</div>
+        <div class="card-desc">A fully restored colonial-era mansion with hand-painted frescoes, courtyards, and a private chef.</div>
+        <div class="card-specs">
+          <div class="spec-item"><span>🛏️</span> 6 Bedrooms</div>
+          <div class="spec-item"><span>👨‍🍳</span> Private Chef</div>
+          <div class="spec-item"><span>🎨</span> Frescoes</div>
+        </div>
+        <a href="https://maps.google.com/?q=Civil+Lines+Jaipur+Rajasthan" target="_blank" class="map-link">🗺️ View on Google Maps</a>
+        <div class="card-footer">
+          <div class="card-price">
+            <div class="amount">₹55,000 <span class="period">/night</span></div>
+            <div class="per-day">max 12 guests</div>
+          </div>
+          <button class="btn-book" onclick="openPayment('Shahi Niwas Heritage Mansion', 55000, 'Home', 'Jaipur')">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-header fade-in">
+    <div class="section-tag">✦ Guest Reviews</div>
+    <h2>What Our Guests Say</h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial fade-in">
+      <div class="stars">★★★★★</div>
+      <p>"Drove the Lamborghini through Goa's coastal highways at sunrise. An experience I'll never forget. The booking process was seamless and the car was in perfect condition."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">AR</div>
+        <div class="author-info">
+          <strong>Arjun Reddy</strong>
+          <span>Hyderabad · Car Rental</span>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial fade-in">
+      <div class="stars">★★★★★</div>
+      <p>"The Udaipur palace experience was absolutely surreal. Waking up to Lake Pichola views with a butler bringing chai — this is what travel should feel like."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">PG</div>
+        <div class="author-info">
+          <strong>Priya Gupta</strong>
+          <span>Delhi · Home Rental</span>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial fade-in">
+      <div class="stars">★★★★★</div>
+      <p>"The Range Rover in Manali was a revelation. Zero issues on mountain roads and the support team was available 24/7. Already planning my next trip."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">VK</div>
+        <div class="author-info">
+          <strong>Vikram Kapoor</strong>
+          <span>Pune · Car Rental</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo">Daily Rentals</a>
+      <p>India's most exclusive platform for luxury car and exotic home rentals. Crafting unforgettable experiences at the country's most iconic destinations since 2026.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Destinations</h4>
+      <ul>
+        <li><a href="#">Goa</a></li>
+        <li><a href="#">Rajasthan</a></li>
+        <li><a href="#">Himachal Pradesh</a></li>
+        <li><a href="#">Kerala</a></li>
+        <li><a href="#">Andaman Islands</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#">Car Rentals</a></li>
+        <li><a href="#">Home Rentals</a></li>
+        <li><a href="#">Chauffeur Service</a></li>
+        <li><a href="#">Corporate Events</a></li>
+        <li><a href="#">Wedding Packages</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">24/7 Helpline</a></li>
+        <li><a href="#">Cancellation Policy</a></li>
+        <li><a href="#">Insurance Info</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Daily Rentals. All rights reserved. All prices in INR.</span>
+    <span>🔒 Secure Payments · PCI-DSS Compliant · RBI Regulated</span>
+  </div>
+</footer>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeOnOverlay(event)">
+  <div class="modal" id="paymentModal">
+    <div class="modal-header">
+      <h3>Complete Your Booking</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- BOOKING SUMMARY -->
+      <div class="booking-summary">
+        <h4>Booking Summary</h4>
+        <div class="summary-row">
+          <span>Item</span>
+          <span class="val" id="summaryItem">—</span>
+        </div>
+        <div class="summary-row">
+          <span>Type</span>
+          <span class="val" id="summaryType">—</span>
+        </div>
+        <div class="summary-row">
+          <span>Location</span>
+          <span class="val" id="summaryLocation">—</span>
+        </div>
+        <div class="summary-row">
+          <span>Duration</span>
+          <span class="val" id="summaryDuration">—</span>
+        </div>
+        <div class="summary-row">
+          <span>Rate</span>
+          <span class="val" id="summaryRate">—</span>
+        </div>
+        <div class="summary-row">
+          <span>GST (18%)</span>
+          <span class="val" id="summaryGST">—</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span class="val" id="summaryTotal">—</span>
+        </div>
+      </div>
+
+      <!-- DATES -->
+      <div class="date-row">
+        <div class="form-group">
+          <label>Check-in / Pickup Date</label>
+          <input type="date" id="startDate" onchange="updateTotal()">
+        </div>
+        <div class="form-group">
+          <label>Check-out / Return Date</label>
+          <input type="date" id="endDate" onchange="updateTotal()">
+        </div>
+      </div>
+
+      <!-- GUEST INFO -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" placeholder="Ravi Sharma">
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" placeholder="+91 98XXX XXXXX">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@example.com">
+      </div>
+
+      <!-- PAYMENT METHOD -->
+      <div class="form-group" style="margin-top: 1.5rem;">
+        <label>Payment Method</label>
+        <div class="payment-methods">
+          <button class="pay-method active" onclick="selectPayMethod('card', this)">💳 Card</button>
+          <button class="pay-method" onclick="selectPayMethod('upi', this)">📱 UPI</button>
+          <button class="pay-method" onclick="selectPayMethod('netbank', this)">🏦 Net Banking</button>
+          <button class="pay-method" onclick="selectPayMethod('wallet', this)">👛 Wallet</button>
+        </div>
+      </div>
+
+      <!-- CARD FORM -->
+      <div id="cardForm">
+        <div class="form-group">
+          <label>Card Number</label>
+          <div class="card-input-wrap">
+            <input type="text" placeholder="4242 4242 4242 4242" maxlength="19" oninput="formatCard(this)">
+            <span class="card-icon">💳</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Expiry Date</label>
+            <input type="text" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)">
+          </div>
+          <div class="form-group">
+            <label>CVV</label>
+            <input type="text" placeholder="•••" maxlength="3">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Cardholder Name</label>
+          <input type="text" placeholder="Name as on card">
+        </div>
+      </div>
+
+      <!-- UPI FORM -->
+      <div id="upiForm" class="upi-input">
+        <div class="form-group">
+          <label>UPI ID</label>
+          <input type="text" placeholder="yourname@upi or 98XXXXXX@paytm">
+        </div>
+        <p style="font-size:0.8rem; color: var(--muted); margin-top: -0.5rem;">Supported: PhonePe, GPay, Paytm, BHIM, Amazon Pay</p>
+      </div>
+
+      <!-- NET BANKING FORM -->
+      <div id="netbankForm" class="upi-input">
+        <div class="form-group">
+          <label>Select Bank</label>
+          <select>
+            <option>State Bank of India</option>
+            <option>HDFC Bank</option>
+            <option>ICICI Bank</option>
+            <option>Axis Bank</option>
+            <option>Kotak Mahindra Bank</option>
+            <option>Punjab National Bank</option>
+            <option>Bank of Baroda</option>
+            <option>Yes Bank</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- WALLET FORM -->
+      <div id="walletForm" class="upi-input">
+        <div class="form-group">
+          <label>Select Wallet</label>
+          <select>
+            <option>Paytm Wallet</option>
+            <option>Amazon Pay</option>
+            <option>PhonePe Wallet</option>
+            <option>Freecharge</option>
+            <option>MobiKwik</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn-pay" onclick="processPayment()">
+        🔒 Pay Securely · <span id="payBtnAmount">₹0</span>
+      </button>
+      <div class="secure-note">🛡️ 256-bit SSL Encrypted · PCI-DSS Compliant · RBI Regulated Payment Gateway</div>
+    </div>
+
+    <!-- SUCCESS SCREEN -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✅</div>
+      <h3>Booking Confirmed!</h3>
+      <p>Your luxury experience has been reserved. A confirmation has been sent to your email.</p>
+      <div class="booking-id" id="bookingId">BOOKING: #DR-2025-XXXXX</div>
+      <p style="font-size: 0.8rem; color: var(--muted);">Our concierge will contact you within 2 hours to confirm details.</p>
+      <button class="btn-gold" onclick="closeModal()" style="margin-top: 1.5rem; padding: 12px 28px;">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---- SCROLL ANIMATIONS ----
+  const fadeEls = document.querySelectorAll('.fade-in');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  fadeEls.forEach(el => observer.observe(el));
+
+  // ---- FAVOURITES ----
+  function toggleFav(el) {
+    el.classList.toggle('liked');
+    el.textContent = el.classList.contains('liked') ? '♥' : '♡';
+  }
+
+  // ---- FILTER CARS ----
+  function filterCars(cat, btn) {
+    document.querySelectorAll('#carsGrid .filter-tab, .filter-tabs .filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#carsGrid .card').forEach(card => {
+      if (cat === 'all' || card.dataset.category === cat) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function filterHomes(cat, btn) {
+    // Update the correct filter tab group
+    const tabs = btn.parentElement.querySelectorAll('.filter-tab');
+    tabs.forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#homesGrid .card').forEach(card => {
+      if (cat === 'all' || card.dataset.category === cat) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  // ---- PAYMENT MODAL ----
+  let currentPrice = 0;
+  let currentItem = '';
+  let currentType = '';
+  let currentLocation = '';
+
+  function openPayment(item, price, type, location) {
+    currentPrice = price;
+    currentItem = item;
+    currentType = type;
+    currentLocation = location;
+
+    document.getElementById('summaryItem').textContent = item;
+    document.getElementById('summaryType').textContent = type + ' Rental';
+    document.getElementById('summaryLocation').textContent = location;
+    document.getElementById('summaryRate').textContent = '₹' + price.toLocaleString('en-IN') + '/' + (type === 'Car' ? 'day' : 'night');
+
+    // Set default dates
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('startDate').value = today.toISOString().split('T')[0];
+    document.getElementById('endDate').value = tomorrow.toISOString().split('T')[0];
+
+    // Reset success screen
+    document.getElementById('successScreen').classList.remove('show');
+    document.getElementById('successScreen').style.display = 'none';
+    document.querySelector('.modal-body').style.display = '';
+
+    updateTotal();
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function updateTotal() {
+    const start = new Date(document.getElementById('startDate').value);
+    const end = new Date(document.getElementById('endDate').value);
+    let days = Math.max(1, Math.round((end - start) / (1000 * 60 * 60 * 24)));
+    if (isNaN(days)) days = 1;
+
+    const label = currentType === 'Car' ? (days === 1 ? '1 day' : days + ' days') : (days === 1 ? '1 night' : days + ' nights');
+    const subtotal = currentPrice * days;
+    const gst = Math.round(subtotal * 0.18);
+    const total = subtotal + gst;
+
+    document.getElementById('summaryDuration').textContent = label;
+    document.getElementById('summaryGST').textContent = '₹' + gst.toLocaleString('en-IN');
+    document.getElementById('summaryTotal').textContent = '₹' + total.toLocaleString('en-IN');
+    document.getElementById('payBtnAmount').textContent = '₹' + total.toLocaleString('en-IN');
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeOnOverlay(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  function selectPayMethod(method, btn) {
+    document.querySelectorAll('.pay-method').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('cardForm').style.display = method === 'card' ? '' : 'none';
+    document.getElementById('upiForm').classList.toggle('show', method === 'upi');
+    document.getElementById('netbankForm').classList.toggle('show', method === 'netbank');
+    document.getElementById('walletForm').classList.toggle('show', method === 'wallet');
+  }
+
+  function formatCard(el) {
+    let v = el.value.replace(/\D/g, '').substring(0, 16);
+    el.value = v.match(/.{1,4}/g)?.join(' ') || v;
+  }
+
+  function formatExpiry(el) {
+    let v = el.value.replace(/\D/g, '').substring(0, 4);
+    if (v.length >= 3) v = v.substring(0, 2) + ' / ' + v.substring(2);
+    el.value = v;
+  }
+
+  function processPayment() {
+    const bookingId = 'DR-' + new Date().getFullYear() + '-' + Math.floor(10000 + Math.random() * 90000);
+    document.getElementById('bookingId').textContent = 'BOOKING: #' + bookingId;
+    document.querySelector('.modal-body').style.display = 'none';
+    const s = document.getElementById('successScreen');
+    s.style.display = 'block';
+    setTimeout(() => s.classList.add('show'), 10);
+  }
+
+  // Initialize
+  document.getElementById('cardForm').style.display = '';
+</script>
+
+</body>
+</html>
